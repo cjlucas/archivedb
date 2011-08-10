@@ -14,8 +14,8 @@ REQUIREMENTS
   - support may come later for other OSes
 
 - Python
-  - 2.6 or higher
-  - 3.0 or higher
+  - 2.7 or higher
+  - 3.2 or higher
 
 - MySQL
   - 4.1 or higher
