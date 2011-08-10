@@ -1,1 +1,4 @@
 /archivedb.komodoproject
+/temp
+*.pyc
+__pycache__
