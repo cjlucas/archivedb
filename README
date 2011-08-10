@@ -10,7 +10,8 @@ functionality of this backend with movie info from IMDb, and tv info from TVRage
 
 REQUIREMENTS
 ------------
-- Linux (support may come later for other OSes)
+- Linux
+  - support may come later for other OSes
 
 - Python
   - 2.6 or higher
@@ -19,7 +20,8 @@ REQUIREMENTS
 - MySQL
   - 4.1 or higher
 
-- PyMySQL (https://github.com/petehunt/PyMySQL)
+- PyMySQL
+  - http://www.pymysql.org/ 
 
 
 INSTALL INSTRUCTIONS
