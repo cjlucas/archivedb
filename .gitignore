@@ -2,3 +2,4 @@
 /temp
 *.pyc
 __pycache__
+/logs
