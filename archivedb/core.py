@@ -1,10 +1,12 @@
-import os, sys, re
-# local
-import archivedb.logger
+import os, sys, re, time
 
+import archivedb.logger
 log = archivedb.logger.get_logger("logs", "archivedb.log")
 
-import archivedb.config
+import archivedb.config as config
+import archivedb.threads
+import archivedb.sql
+
 
 
 def split_path(watch_dirs, p):
@@ -36,9 +38,13 @@ def split_path(watch_dirs, p):
 	return (watch_dir, base_path, file_name)
 
 def main():
-	args = archivedb.config.get_args()
-	p = "/mnt/user/stuff/tv/Curb_Your_Enthusiasm/Curb.Your.Enthusiasm.S08.720p.HDTV.DD5.1.x264-NorTV/curb.mkv"
-	print(split_path(args["watch_dirs"], p))
+	threads = ["inotify", "oswalk"]
+	threads_dict = archivedb.threads.initialize_child_processes(threads)
+	
+	while True:
+		print("hi")
+		time.sleep(2)
+		threads_dict = archivedb.threads.keep_child_processes_alive(threads_dict)
 
 
 if __name__ == 'archivedb.core':
