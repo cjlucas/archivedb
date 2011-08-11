@@ -157,7 +157,7 @@ def format_args(args):
 	cast_int = ["db_port"]
 	
 	for k in cast_int:
-		if args.has_key(k):
+		if k in args:
 			args[k] = int(args[k])
 			
 	# split values
@@ -168,7 +168,7 @@ def format_args(args):
 	}
 	
 	for k in split_dict:
-		if args.has_key(k):
+		if k in args:
 			# strip whitespace for every element in list after split()
 			args[k] = [e.strip() for e in args[k].split(split_dict[k])]
 			
@@ -189,3 +189,4 @@ if __name__ == 'archivedb.config':
 		create_default_config(CONF_FILE)
 	
 	config = validate_config(CONF_FILE)
+	args = get_args()
