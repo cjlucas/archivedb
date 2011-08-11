@@ -1,7 +1,5 @@
 import os, sys, logging, logging.handlers
 
-print(__name__)
-
 def get_logger(log_path, log_file):
 	#LOG_PATH = os.path.join(os.path.expanduser(os.path.split(sys.argv[0])[0]), "logs")
 	#LOG_FILE = "archivedb.log"
@@ -25,7 +23,7 @@ def get_logger(log_path, log_file):
 	rotator.setLevel(logging.DEBUG)
 	rotator.setFormatter(formatter)
 
-	console.setLevel(logging.DEBUG)
+	console.setLevel(logging.INFO)
 	console.setFormatter(formatter)
 	
 	log.addHandler(rotator)
