@@ -6,38 +6,34 @@ log = archivedb.logger.get_logger("logs", "archivedb.log")
 import archivedb.config as config
 import archivedb.threads
 import archivedb.sql
-
-
-
-def split_path(watch_dirs, p):
-	"""
-	Parses out a path to a file in a format suitable for
-	inserting into and searching the database
-	
-	Args:
-	watch_dirs - list of directories script is watching
-	p - full path to file
-	
-	Returns: tuple (watch_dir, base_path, file_name)
-	"""
-	
-	watch_dir = ""
-	base_path = ""
-	file_name = ""
-	
-	# find which watch_dir is being used
-	for d in watch_dirs:
-		split = re.split("^{0}".format(d), p)
-		if split[0] == "":
-			watch_dir = d.rstrip(os.sep)
-			base_path = split[1].strip(os.sep)
-			break
-		
-	base_path, file_name = os.path.split(base_path)
-	
-	return (watch_dir, base_path, file_name)
+from archivedb.common import split_path
 
 def main():
+	args = config.args
+	## perform db checks ##
+	db_host = config.args["db_host"]
+	db_port = config.args["db_port"]
+	db_user = config.args["db_user"]
+	db_pass = config.args["db_pass"]
+	
+	blah = split_path(args["watch_dirs"], "/mnt/user/stuff/sabnzbd/complete/The.Colbert.Report.2011.08.11.Gloria.Steinem.720p.HDTV.x264-LMAO/the.colbert.report.2011.08.11.gloria.steinem.720p.hdtv.x264-lmao.mkv")
+	print(blah)
+	# check if server is up/if archivedb database exists
+	db = archivedb.sql.create_conn(db_host, db_user, db_pass, "archivedb", db_port)
+	
+	# check if tables exist
+	# add code to append to tables if plugins are enabled
+	tables = ["archive"]
+	c = db.cursor()
+	for t in tables:
+		if archivedb.sql.table_exists(c, t):
+			log.info("table '{0}' exists.")
+		else:
+			log.critical("required table '{0}' doesn't exist, exiting.".format(t))
+			print(args["tables"][t])
+			sys.exit(1)
+	
+	## create threads ##
 	threads = ["inotify", "oswalk"]
 	threads_dict = archivedb.threads.initialize_child_processes(threads)
 	
