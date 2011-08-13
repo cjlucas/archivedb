@@ -1,10 +1,6 @@
 import sys, pymysql, logging
 import archivedb.config as config
 
-#def create_table(watch_dirs, table_name):
-
-#def create_database():
-
 def table_exists(c, table_name):
 	c.execute("SHOW TABLES")
 	tables = c.fetchall()
@@ -15,22 +11,36 @@ def table_exists(c, table_name):
 	else:
 		return(False)
 
+def create_database(host, user, passwd, db_name, port=3306):
+	db = pymysql.connect(
+		host=host,
+		user=user,
+		passwd=passwd,
+		port=port
+	)
+	c = db.cursor()
+	c.execute("CREATE DATABASE IF NOT EXISTS `{0}`".format(db_name))
+	log.info("database '{0}' created".format(db_name))
+	
+def create_table(c, query):
+	c.execute(query)
+	log.info("table created")
+
 def create_conn(host, user, passwd, database, port=3306):
 	try:
 		db = pymysql.connect(
 			host=host,
 			user=user,
 			passwd=passwd,
-			port=port,
 			db=database,
+			port=port,
 		)
-		
+		log.debug("MySQL connection successful")
 	except (pymysql.OperationalError, pymysql.InternalError) as e:
 		error_code = e.args[0]
-		if error_code == 1094: # mysql server is up, but database doesn't exist
-			log.debug("database '{0}' not found, creating.".format(database))
-			# insert database creation code here
-			#
+		if error_code == 1049: # mysql server is up, but database doesn't exist
+			log.info("database '{0}' not found, creating.".format(database))
+			create_database(host, user, passwd, database, port)
 			# call create_conn() again now that database is created
 			db = create_conn(host, user, passwd, database, port)
 		else:
@@ -45,8 +55,9 @@ if __name__ == 'archivedb.sql':
 	log = logging.getLogger(__name__)
 	log.info("{0} imported".format(__name__))
 	
-	db_host = config.args["db_host"]
-	db_port = config.args["db_port"]
-	db_user = config.args["db_user"]
-	db_pass = config.args["db_pass"]
-	watch_dirs = config.args["watch_dirs"]
+	db_host		= config.args["db_host"]
+	db_port		= config.args["db_port"]
+	db_user		= config.args["db_user"]
+	db_pass		= config.args["db_pass"]
+	db_name		= config.args["db_name"]
+	watch_dirs	= config.args["watch_dirs"]
