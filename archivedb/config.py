@@ -1,4 +1,5 @@
 import os,sys, logging
+import archivedb.common
 
 # The ConfigParser module has been renamed to configparser in Python 3.0
 if sys.version_info.major < 3:
@@ -99,8 +100,8 @@ def validate_config(conf_file):
 		conf_dict = {pair[0]:pair[1] for pair in config.items(sec)}
 		log.debug("conf_dict = {0}".format(str(conf_dict)))
 		for k in keys_sorted:
-			log.debug("conf_dict[{0}] = {1}".format(k, conf_dict[k]))
-			log.debug("defaults[{0}] = {1}".format(k, defaults[k]))
+			log.debug("conf_dict[{0}]	= {1}".format(k, conf_dict[k]))
+			log.debug("defaults[{0}]	= {1}".format(k, defaults[k]))
 			if k in required_keys:
 				if k not in conf_dict:
 						log.fatal("config file missing required key '{0}' (section: {1}) , exiting.".format(k, sec))
@@ -190,3 +191,21 @@ if __name__ == 'archivedb.config':
 	
 	config = validate_config(CONF_FILE)
 	args = get_args()
+	
+	## custom args here ##
+	# tables - sql query to create table
+	args["tables"] = {
+		"archive" : """CREATE TABLE `archivedb`.`archive` (
+	`id` mediumint(9) NOT NULL AUTO_INCREMENT,
+	`watch_dir` {0} NOT NULL,
+	`path` longtext NOT NULL,
+	`filename` longtext NOT NULL,
+	`md5` tinyint(32) NOT NULL,
+	`mtime` tinyint(10) NOT NULL,
+	`size` tinyint(12) NOT NULL,
+	PRIMARY KEY (`id`),
+	FULLTEXT `path` (path),
+	FULLTEXT `filename` (filename)
+) ENGINE=`MyISAM` AUTO_INCREMENT=1 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ROW_FORMAT=DYNAMIC CHECKSUM=0 DELAY_KEY_WRITE=0;""".format(archivedb.common.list_to_enum(args["watch_dirs"])),
+	}
+	
