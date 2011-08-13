@@ -1,5 +1,6 @@
 import sys, pymysql, logging
 import archivedb.config as config
+from archivedb.common import enum_to_list, list_to_enum, md5sum
 
 def table_exists(c, table_name):
 	c.execute("SHOW TABLES")
@@ -49,6 +50,23 @@ def create_conn(host, user, passwd, database, port=3306):
 			sys.exit(1)
 			
 	return(db)
+	
+def get_enum(c, table_name, field_index=1):
+	c.execute("DESCRIBE `{0}`".format(table_name))
+	# field type always at index pos 1
+	enum_line = c.fetchall()[field_index][1]
+
+	watch_list = enum_to_list(enum_line)
+	return(watch_list)
+	
+def alter_enum(c, table_name, field_name, watch_dirs):
+	query = "ALTER TABLE `{0}` MODIFY `{1}` {2}".format(
+		table_name,
+		field_name,
+		list_to_enum(watch_dirs),
+	)
+	log.debug("query = {0}".format(query))
+	c.execute(query)
 
 
 if __name__ == 'archivedb.sql':
