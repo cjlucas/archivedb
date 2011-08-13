@@ -6,7 +6,6 @@ def test(name):
 	print(name)
 		
 def get_thread_info(thread):
-	print(locals())
 	thread_info = {
 		"inotify"	: [test, ("inotify",)],
 		"oswalk"	: [test, ("oswalk",)],
