@@ -193,6 +193,7 @@ if __name__ == 'archivedb.config':
 	args = get_args()
 	
 	## custom args here ##
+	args["db_name"] = "archivedb"
 	# tables - sql query to create table
 	args["tables"] = {
 		"archive" : """CREATE TABLE `archivedb`.`archive` (
