@@ -26,7 +26,7 @@ def get_default_params(section):
 	defaults["general"] = {
 		"watch_dirs"	: "",
 		"ignore_dirs"	: "",
-		"ignore_files"	: "*.!ut",
+		"ignore_files"	: ".*\!ut.* ^\.",
 	}
 	defaults["db"] = {
 		"host"	: "localhost",
