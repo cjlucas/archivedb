@@ -60,11 +60,11 @@ def create_default_config(conf_file):
 	
 	for section in ["general", "db"]:
 		keys_sorted, defaults = get_default_params(section)[0:2]
-		
+
 		config.add_section(section)
 		for k in keys_sorted:
 			config.set(section, k, defaults[k])
-	
+		
 	with open(conf_file, "wb") as configfile:
 		config.write(configfile)
 		
@@ -187,7 +187,9 @@ if __name__ == 'archivedb.config':
 	# create config if none exists
 	if not os.path.exists(CONF_FILE):
 		log.info("conf file not found, creating one at {0}".format(CONF_FILE))
-		create_default_config(CONF_FILE)
+		#create_default_config(CONF_FILE)
+		log.critical("{0} not found, edit example.conf and copy.".format(CONF_FILE))
+		sys.exit(1)
 	
 	config = validate_config(CONF_FILE)
 	args = get_args()
