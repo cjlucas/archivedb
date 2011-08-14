@@ -112,7 +112,7 @@ def validate_config(conf_file):
 					log.fatal("config file has required key '{0}' (section: {1}), but default value is not allowed, exiting".format(k, sec))
 					sys.exit(1)
 			else:
-				config.set(sec, k, defaults[k])
+				config.set(sec, k, conf_dict[k])
 				
 	return(config)
 
