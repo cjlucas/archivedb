@@ -39,7 +39,11 @@ def split_path(watch_dirs, p):
 		
 	base_path, file_name = os.path.split(base_path)
 	
-	return (watch_dir, base_path, file_name)
+	return(watch_dir, base_path, file_name)
+	
+def escape_quotes(s):
+	s = s.replace("\'","\\'").replace('\"','\\"')
+	return(s)
 	
 
 def list_to_enum(watch_dirs):
