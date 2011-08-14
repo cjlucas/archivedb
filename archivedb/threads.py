@@ -1,5 +1,6 @@
 import logging, time
 from multiprocessing import Process
+from archivedb.monitor import run_oswalk, run_inotify
 
 def test(name):
 	time.sleep(3)
@@ -7,8 +8,8 @@ def test(name):
 		
 def get_thread_info(thread):
 	thread_info = {
-		"inotify"	: [test, ("inotify",)],
-		"oswalk"	: [test, ("oswalk",)],
+		"inotify"	: [run_inotify, ()],
+		"oswalk"	: [run_oswalk, ()],
 	}
 	target = thread_info[thread][0]
 	args = thread_info[thread][1]
