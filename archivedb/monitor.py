@@ -1,4 +1,4 @@
-import os, sys, logging
+import os, sys, logging, re
 import archivedb.config as config
 import archivedb.sql as sql
 from archivedb.common import md5sum, split_path, escape_quotes
@@ -11,10 +11,11 @@ if os.name == 'posix': # linux only
 		import pyinotify
 	except ImportError:
 		log.warning("module 'pyinotify' not found. disabling inotify monitoring")
-		del args["threads"][args["threads"].index("inotify")]
+		#del args["threads"][args["threads"].index("inotify")]
 
 		
 def run_oswalk():
+	log.debug("start run_oswalk")
 	db = sql.DatabaseConnection(args["db_host"],
 								args["db_user"],
 								args["db_pass"],
@@ -28,14 +29,21 @@ def run_oswalk():
 		for watch_dir in args["watch_dirs"]:
 			if not os.path.isdir(watch_dir):
 				log.warning("watch_dir '{0}' does not exist, skipping".format(watch_dir))
+				continue
 			else:
 				log.info("checking watch_dir '{0}'".format(watch_dir))
 			
 			for root, dirs, files in os.walk(watch_dir):
 				for f in files:
+					# check if f should be ignored
+					for regex in args["ignore_files"]:
+						if re.search(regex, f, re.I):
+							log.info("file '{0}' matched '{1}', skipping.".format(f, regex))
+							
 					full_path		= os.path.join(root, f)
 					mtime			= os.stat(full_path).st_mtime
 					size			= os.stat(full_path).st_size
+
 					
 					(watch_dir, path, filename) = split_path(args["watch_dirs"], full_path)
 					
