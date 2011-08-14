@@ -192,7 +192,9 @@ if __name__ == 'archivedb.config':
 	config = validate_config(CONF_FILE)
 	args = get_args()
 	
-	## custom args here ##
+	## static args here ##
+	args["threads"] = ["inotify", "oswalk"]
+	
 	args["db_name"] = "archivedb"
 	# tables - sql query to create table
 	args["tables"] = {
@@ -201,12 +203,15 @@ if __name__ == 'archivedb.config':
 	`watch_dir` {0} NOT NULL,
 	`path` longtext NOT NULL,
 	`filename` longtext NOT NULL,
-	`md5` tinyint(32) NOT NULL,
-	`mtime` tinyint(10) NOT NULL,
-	`size` tinyint(12) NOT NULL,
+	`md5` varchar(32) NOT NULL,
+	`mtime` int(10) NOT NULL,
+	`size` varchar(12) NOT NULL,
 	PRIMARY KEY (`id`),
 	FULLTEXT `path` (path),
 	FULLTEXT `filename` (filename)
 ) ENGINE=`MyISAM` AUTO_INCREMENT=1 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ROW_FORMAT=DYNAMIC CHECKSUM=0 DELAY_KEY_WRITE=0;""".format(archivedb.common.list_to_enum(args["watch_dirs"])),
+	}
+	args["table_struct"] = {
+		"archive" : ("id", "watch_dir", "path", "filename", "md5", "mtime", "size"),
 	}
 	
