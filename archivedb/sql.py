@@ -46,11 +46,10 @@ class DatabaseConnection:
 		except (pymysql.OperationalError, pymysql.InternalError) as e:
 			error_code = e.args[0]
 			if error_code == 1049: # mysql server is up, but database doesn't exist
-				log.info("database '{0}' not found, creating.".format(database))
-				create_database(host, user, passwd, database, port)
+				log.info("database '{0}' not found, creating.".format(self.database))
+				create_database()
 				# call create_conn() again now that database is created
-				self.db = create_conn(host, user, passwd, database, port)
-				self.c = self.db.cursor()
+				self.create_conn()
 			else:
 				log.critical("error when trying to connect to db: {0}".format(e))
 				log.critical("closing thread")
