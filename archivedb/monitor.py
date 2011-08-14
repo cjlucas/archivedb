@@ -36,10 +36,14 @@ def run_oswalk():
 			for root, dirs, files in os.walk(watch_dir):
 				for f in files:
 					# check if f should be ignored
+					skip = False
 					for regex in args["ignore_files"]:
 						if re.search(regex, f, re.I):
 							log.info("file '{0}' matched '{1}', skipping.".format(f, regex))
-							
+							skip = True
+					
+					if skip:
+						continue
 					full_path		= os.path.join(root, f)
 					mtime			= os.stat(full_path).st_mtime
 					size			= os.stat(full_path).st_size
