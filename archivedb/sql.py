@@ -47,7 +47,7 @@ class DatabaseConnection:
 			error_code = e.args[0]
 			if error_code == 1049: # mysql server is up, but database doesn't exist
 				log.info("database '{0}' not found, creating.".format(self.database))
-				create_database()
+				self.create_database()
 				# call create_conn() again now that database is created
 				self.create_conn()
 			else:
