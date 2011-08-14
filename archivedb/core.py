@@ -7,7 +7,7 @@ import archivedb.config as config
 import archivedb.threads
 import archivedb.sql
 import archivedb.monitor
-#from archivedb.common import split_path
+from archivedb.common import split_path
 
 def main():
 	args = config.args
@@ -18,14 +18,16 @@ def main():
 	db_pass = config.args["db_pass"]
 	db_name = config.args["db_name"]
 	
-	db = archivedb.sql.create_conn(db_host, db_user, db_pass, db_name, db_port)	
+	db = archivedb.sql.DatabaseConnection(db_host, db_user, db_pass, db_name, db_port, "archive")
+	#db.create_conn()
+	
 	
 	# check if tables exist
 	# add code to append to tables list if plugins are enabled
 	tables = ["archive"]
-	c = db.cursor()
+	#c = db.cursor()
 	for t in tables:
-		if archivedb.sql.table_exists(c, t):
+		if db.table_exists(t):
 			log.debug("table '{0}' exists.".format(t))
 		else:
 			log.info("required table '{0}' doesn't exist, creating.".format(t))
@@ -36,7 +38,7 @@ def main():
 	# check if watch dirs in conf file match watch dirs set in database
 	# use set() because it doesn't care about order
 	conf_watch_dirs = set(args["watch_dirs"])
-	db_watch_dirs	= set(archivedb.sql.get_enum(c, "archive"))
+	db_watch_dirs	= set(db.get_enum())
 	if conf_watch_dirs == db_watch_dirs:
 		log.debug("watch_dirs in conf match watch dirs in database, no need to update enum")
 
@@ -44,15 +46,13 @@ def main():
 		log.debug("watch_dirs in conf don't match to watch dirs in database, need to update")
 		log.debug("conf_watch_dirs	= {0}".format(conf_watch_dirs))
 		log.debug("db_watch_dirs	= {0}".format(db_watch_dirs))
-		archivedb.sql.alter_enum(c, "archive", "watch_dir", args["watch_dirs"])
+		db.alter_enum("watch_dir", args["watch_dirs"])
 		
 		
 	## create threads ##
-	threads = ["inotify", "oswalk"]
-	threads_dict = archivedb.threads.initialize_child_processes(threads)
+	threads_dict = archivedb.threads.initialize_child_processes(args["threads"])
 	
 	while True:
-		print("hi")
 		time.sleep(2)
 		threads_dict = archivedb.threads.keep_child_processes_alive(threads_dict)
 
