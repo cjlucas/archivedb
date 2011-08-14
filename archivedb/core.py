@@ -31,7 +31,7 @@ def main():
 			log.debug("table '{0}' exists.".format(t))
 		else:
 			log.info("required table '{0}' doesn't exist, creating.".format(t))
-			archivedb.sql.create_table(c, args["tables"][t])
+			db.create_table(args["tables"][t])
 			sys.exit(1)
 			
 	# perform enum checks here
