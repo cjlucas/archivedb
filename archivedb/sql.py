@@ -25,7 +25,9 @@ class DatabaseConnection:
 			return(False)
 	
 	def create_database(self):
-		self.c.execute("CREATE DATABASE IF NOT EXISTS `{0}`".format(self.database))
+		db = pymysql.connect(self.host, self.user, self.passwd, port=self.port)
+		c = db.cursor()
+		c.execute("CREATE DATABASE IF NOT EXISTS `{0}`".format(self.database))
 		log.info("database '{0}' created".format(self.database))
 		
 	def create_table(self, query):
