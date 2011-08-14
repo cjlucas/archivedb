@@ -18,7 +18,7 @@ def main():
 	db_pass = config.args["db_pass"]
 	db_name = config.args["db_name"]
 	
-	db = archivedb.sql.DatabaseConnection(db_host, db_user, db_pass, db_name, db_port, args["db_name"])
+	db = archivedb.sql.DatabaseConnection(db_host, db_user, db_pass, db_name, db_port, "archive")
 	#db.create_conn()
 	
 	
