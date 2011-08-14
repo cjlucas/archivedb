@@ -32,7 +32,6 @@ def main():
 		else:
 			log.info("required table '{0}' doesn't exist, creating.".format(t))
 			db.create_table(args["tables"][t])
-			sys.exit(1)
 			
 	# perform enum checks here
 	# check if watch dirs in conf file match watch dirs set in database
