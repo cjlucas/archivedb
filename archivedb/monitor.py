@@ -41,6 +41,7 @@ def run_oswalk():
 						if re.search(regex, f, re.I):
 							log.info("file '{0}' matched '{1}', skipping.".format(f, regex))
 							skip = True
+							break
 					
 					if skip:
 						continue
@@ -51,15 +52,16 @@ def run_oswalk():
 					
 					(watch_dir, path, filename) = split_path(args["watch_dirs"], full_path)
 					
-					data = db.get_fields(watch_dir, path, filename, "mtime")
+					data = db.get_fields(watch_dir, path, filename, ["mtime","size"])
 					
 					if not data: # file is new
 						db.insert_file(watch_dir, path, filename, md5sum(full_path), mtime, size)
 					else:
-						old_mtime = data[0][0]
+						old_mtime	= data[0][0]
+						old_size	= data[0][1]
 						#log.debug("old_mtime = {0}".format(old_mtime))
 						# check if it has changed
-						if old_mtime != mtime:
+						if old_mtime != mtime or old_size != size:
 							rows_changed = db.update_file(watch_dir, path, filename, md5sum(full_path), mtime, size)
 							log.debug("rows_changed = {0}".format(rows_changed))
 					
