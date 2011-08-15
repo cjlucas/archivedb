@@ -27,3 +27,10 @@ REQUIREMENTS
 INSTALL INSTRUCTIONS
 --------------------
 - Dunno yet
+
+TODO
+----
+- look over os.walk portion of code
+- implement pyinotify portion
+- implement IMDb and TVRage "plugins"
+- general bug fixing
