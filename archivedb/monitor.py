@@ -58,7 +58,8 @@ def run_oswalk():
 					else:
 						old_mtime	= data[0][0]
 						old_size	= data[0][1]
-						#log.debug("old_mtime = {0}".format(old_mtime))
+						log.debug("old_mtime = {0}".format(old_mtime))
+						log.debug("mtime = {0}".format(mtime))
 						log.debug("old_size = {0}".format(old_size))
 						log.debug("size = {0}".format(size))
 						# check if it has changed
