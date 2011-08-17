@@ -5,6 +5,9 @@ def md5sum(f, block_size=2**20):
 	
 	with open(f, "rb") as fp:
 		while True:
+			# check if file has moved/deleted during md5 creation
+			if not os.path.isfile(f):
+				return(None)
 			data = fp.read(block_size)
 			if not data:
 				break
