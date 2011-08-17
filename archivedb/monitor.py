@@ -89,7 +89,7 @@ class InotifyHandler(pyinotify.ProcessEvent):
 	def process_IN_CLOSE_WRITE(self, event):
 		log.debug(event)
 		full_path = event.pathname
-
+		#
 
 	
 	def process_IN_DELETE(self, event):
