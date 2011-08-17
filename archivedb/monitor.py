@@ -70,7 +70,7 @@ def run_oswalk():
 					
 		break
 	
-class InotifyHandler(pyinotify.ProcessHandler):
+class InotifyHandler(pyinotify.ProcessEvent):
 	def process_IN_CLOSE_WRITE(self, event):
 		log.debug(event)
 	
