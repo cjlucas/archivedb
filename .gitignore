@@ -2,5 +2,6 @@
 /temp
 *.pyc
 *~
+*.swp
 __pycache__
 /logs
