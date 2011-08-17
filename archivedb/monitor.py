@@ -46,7 +46,7 @@ def run_oswalk():
 					if skip:
 						continue
 					full_path		= os.path.join(root, f)
-					mtime			= os.stat(full_path).st_mtime
+					mtime			= int(os.stat(full_path).st_mtime) # stored in db w/o decimal
 					size			= os.stat(full_path).st_size
 					
 					(watch_dir, path, filename) = split_path(args["watch_dirs"], full_path)
