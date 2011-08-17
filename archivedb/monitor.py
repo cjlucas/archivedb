@@ -69,13 +69,26 @@ def run_oswalk():
 							log.debug("rows_changed = {0}".format(rows_changed))
 					
 		break
+	
+class InotifyHandler(pyinotify.ProcessHandler):
+	def process_IN_CLOSE_WRITE(self, event):
+		log.debug(event)
+	
+	def process_IN_DELETE(self, event):
+		log.debug(event)
+	
+	def process_IN_MOVED_FROM(self, event):
+		log.debug(event)
+	
+	def process_IN_MOVED_TO(self, event):
+		log.debug(event)
 
 		
 def run_inotify():
 	masks = IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO
 	
 	wm = pyinotify.WatchManager()
-	notifier = pyinotify.Notifier(wm)
+	notifier = pyinotify.Notifier(wm, default_proc_fun=InotifyHandler())
 	
 	for watch_dir in args["watch_dirs"]:
 		log.info("adding '{0}' to inotify monitoring".format(watch_dir))
