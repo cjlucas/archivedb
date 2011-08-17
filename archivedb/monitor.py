@@ -72,6 +72,9 @@ def run_oswalk():
 			time.sleep(3600)
 	
 class InotifyHandler(pyinotify.ProcessEvent):
+	def my_init(self):
+		log.debug("calling my_init()")
+	
 	def process_IN_CLOSE_WRITE(self, event):
 		log.debug(event)
 	
@@ -88,9 +91,17 @@ class InotifyHandler(pyinotify.ProcessEvent):
 def run_inotify():
 	masks = IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO
 	
-	wm = pyinotify.WatchManager()
-	notifier = pyinotify.Notifier(wm, default_proc_fun=InotifyHandler())
+	db = sql.DatabaseConnection(args["db_host"],
+							args["db_user"],
+							args["db_pass"],
+							args["db_name"],
+							args["db_port"],
+							"archive",
+							)
 	
+	wm = pyinotify.WatchManager()
+	notifier = pyinotify.Notifier(wm, default_proc_fun=InotifyHandler(db))
+		
 	for watch_dir in args["watch_dirs"]:
 		log.info("adding '{0}' to inotify monitoring".format(watch_dir))
 		wm.add_watch(watch_dir, masks, rec=True, auto_add=True)
