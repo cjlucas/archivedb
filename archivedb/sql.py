@@ -98,6 +98,13 @@ class DatabaseConnection:
 		log.debug(query)
 		rows_changed = self.c.execute(query)
 		return(rows_changed)
+		
+	def delete_file(self, id):
+		query = """DELETE FROM `archive` WHERE id = '{0}'""".format(id)
+		
+		log.debug(query)
+		rows_changed = self.c.execute(query)
+		return(rows_changed)
 			
 	def get_fields(self, watch_dir, path, filename, fields):
 		if fields.__class__ == str:
