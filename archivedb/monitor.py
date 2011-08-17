@@ -9,9 +9,10 @@ args = config.args
 if os.name == 'posix': # linux only
 	try:
 		import pyinotify
+		from pyinotify import IN_CLOSE_WRITE, IN_DELETE, IN_MOVED_FROM, IN_MOVED_TO
 	except ImportError:
 		log.warning("module 'pyinotify' not found. disabling inotify monitoring")
-		#del args["threads"][args["threads"].index("inotify")]
+		del args["threads"][args["threads"].index("inotify")]
 
 		
 def run_oswalk():
@@ -71,7 +72,16 @@ def run_oswalk():
 
 		
 def run_inotify():
-	pass
+	masks = IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO
+	
+	wm = pyinotify.WatchManager()
+	notifier = pyinotify.Notifier(wm)
+	
+	for watch_dir in args["watch_dir"]:
+		log.info("adding '{0}' to inotify monitoring".format(watch_dir))
+		wm.add(watch_dir, masks, rec=True, auto_add=True)
+		
+	notifier.loop()
 		
 		
 		

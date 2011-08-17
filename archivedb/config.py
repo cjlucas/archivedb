@@ -196,8 +196,6 @@ if __name__ == 'archivedb.config':
 	
 	## static args here ##
 	args["threads"] = ["inotify", "oswalk"]
-	# disable inotify until it's actually implemented
-	del args["threads"][args["threads"].index("inotify")]
 	
 	args["db_name"] = "archivedb"
 	# tables - sql query to create table
