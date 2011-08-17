@@ -14,7 +14,10 @@ if os.name == 'posix': # linux only
 		log.warning("module 'pyinotify' not found. disabling inotify monitoring")
 		del args["threads"][args["threads"].index("inotify")]
 
-		
+
+# disable oswalk thread for testing
+del args["threads"][args["threads"].index("oswalk")]		
+
 def run_oswalk():
 	log.debug("start run_oswalk")
 	db = sql.DatabaseConnection(args["db_host"],
