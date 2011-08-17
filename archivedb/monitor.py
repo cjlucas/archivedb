@@ -77,7 +77,7 @@ def run_inotify():
 	wm = pyinotify.WatchManager()
 	notifier = pyinotify.Notifier(wm)
 	
-	for watch_dir in args["watch_dir"]:
+	for watch_dir in args["watch_dirs"]:
 		log.info("adding '{0}' to inotify monitoring".format(watch_dir))
 		wm.add(watch_dir, masks, rec=True, auto_add=True)
 		
