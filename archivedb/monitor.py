@@ -46,7 +46,7 @@ def run_oswalk():
 					if skip:
 						continue
 					full_path		= os.path.join(root, f)
-					mtime			= int(os.stat(full_path).st_mtime) # stored in db w/o decimal
+					mtime			= os.stat(full_path).st_mtime
 					size			= os.stat(full_path).st_size
 					
 					(watch_dir, path, filename) = split_path(args["watch_dirs"], full_path)
@@ -63,7 +63,7 @@ def run_oswalk():
 						log.debug("old_size = {0}".format(old_size))
 						log.debug("size = {0}".format(size))
 						# check if it has changed
-						if old_mtime != mtime or old_size != size:
+						if int(old_mtime) != int(mtime) or int(old_size) != int(size):
 							rows_changed = db.update_file(watch_dir, path, filename, md5sum(full_path), mtime, size)
 							log.debug("rows_changed = {0}".format(rows_changed))
 					
