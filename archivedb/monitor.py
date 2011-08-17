@@ -79,7 +79,7 @@ def run_inotify():
 	
 	for watch_dir in args["watch_dirs"]:
 		log.info("adding '{0}' to inotify monitoring".format(watch_dir))
-		wm.add(watch_dir, masks, rec=True, auto_add=True)
+		wm.add_watch(watch_dir, masks, rec=True, auto_add=True)
 		
 	notifier.loop()
 		
