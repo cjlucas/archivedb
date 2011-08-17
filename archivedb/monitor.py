@@ -75,7 +75,7 @@ def run_oswalk():
 			time.sleep(3600)
 	
 class InotifyHandler(pyinotify.ProcessEvent):
-	def my_init(self):
+	def my_init(self, db):
 		log.debug("calling my_init()")
 	
 	def process_IN_CLOSE_WRITE(self, event):
