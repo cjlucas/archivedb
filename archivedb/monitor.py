@@ -22,7 +22,7 @@ if os.name == 'posix': # linux only
 
 
 # disable oswalk thread for testing
-del args["threads"][args["threads"].index("oswalk")]
+#del args["threads"][args["threads"].index("oswalk")]
 
 def is_ignored_file(f):
 	for regex in args["ignore_files"]:
@@ -104,9 +104,9 @@ def run_oswalk():
 					if not is_ignored_file(f) and not is_ignored_directory(full_path):
 						add_file(db, full_path)
 					
-			# sleep for an hour, figure out a way to make this more customizable
+			# sleep for a day, figure out a way to make this more customizable
 			log.debug("sleeping")
-			time.sleep(3600)
+			time.sleep(24*3600)
 	
 class InotifyHandler(ProcessEvent):
 	def my_init(self):
