@@ -1,4 +1,4 @@
-import os, sys, logging, re
+import os, sys, logging, re, time
 import archivedb.config as config
 import archivedb.sql as sql
 from archivedb.common import md5sum, split_path, escape_quotes
@@ -68,7 +68,8 @@ def run_oswalk():
 							rows_changed = db.update_file(watch_dir, path, filename, md5sum(full_path), mtime, size)
 							log.debug("rows_changed = {0}".format(rows_changed))
 					
-		break
+			# sleep for an hour, figure out a way to make this more customizable
+			time.sleep(3600)
 	
 class InotifyHandler(pyinotify.ProcessEvent):
 	def process_IN_CLOSE_WRITE(self, event):
