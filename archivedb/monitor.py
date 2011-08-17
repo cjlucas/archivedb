@@ -22,10 +22,12 @@ if os.name == 'posix': # linux only
 
 
 # disable oswalk thread for testing
-#del args["threads"][args["threads"].index("oswalk")]
+del args["threads"][args["threads"].index("oswalk")]
 
 def is_ignored_file(f):
 	for regex in args["ignore_files"]:
+		if regex == "":
+			continue
 		if re.search(regex, f, re.I):
 			log.info("file '{0}' matched '{1}', skipping.".format(f, regex))
 			return(True)
@@ -34,13 +36,15 @@ def is_ignored_file(f):
 	
 def is_ignored_directory(full_path):
 	for d in args["ignore_dirs"]:
+		if d == "":
+			continue
 		if d in full_path:
 			log.info("directory '{0}' matched ignore_dir '{1}', skipping".format(full_path, d))
 			return(True)
 	
 	return(False)
 	
-def process_file(db, full_path):
+def add_file(db, full_path):
 	mtime			= os.stat(full_path).st_mtime
 	size			= os.stat(full_path).st_size
 	
@@ -61,6 +65,19 @@ def process_file(db, full_path):
 		if int(old_mtime) != int(mtime) or int(old_size) != int(size):
 			rows_changed = db.update_file(watch_dir, path, filename, md5sum(full_path), mtime, size)
 			log.debug("rows_changed = {0}".format(rows_changed))
+
+def delete_file(db, full_path):
+	(watch_dir, path, filename) = split_path(args["watch_dirs"], full_path)
+
+	# get id
+	data = db.get_fields(watch_dir, path, filename, ["id"])
+
+	if data:
+		id = data[0][0]
+		db.delete_file(id)
+	else:
+		log.debug("file '{0}' not found in database".format(full_path))
+		return
 
 def run_oswalk():
 	log.debug("start run_oswalk")
@@ -85,7 +102,7 @@ def run_oswalk():
 				for f in files:
 					full_path = os.path.join(root, f)
 					if not is_ignored_file(f) and not is_ignored_directory(full_path):
-						process_file(db, full_path)
+						add_file(db, full_path)
 					
 			# sleep for an hour, figure out a way to make this more customizable
 			log.debug("sleeping")
@@ -106,13 +123,14 @@ class InotifyHandler(ProcessEvent):
 	def process_IN_CLOSE_WRITE(self, event):
 		log.debug(event)
 		full_path = event.pathname
-		f = event.e
+		f = event.name
 		if not is_ignored_file(f) and not is_ignored_directory(full_path):
-			process_file(self.db, full_path)
+			add_file(self.db, full_path)
 
 	
 	def process_IN_DELETE(self, event):
 		log.debug(event)
+		delete_file(self.db, event.pathname)
 	
 	def process_IN_MOVED_FROM(self, event):
 		log.debug(event)
