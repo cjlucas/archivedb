@@ -9,7 +9,7 @@ args = config.args
 if os.name == 'posix': # linux only
 	try:
 		import pyinotify
-		from pyinotify import IN_CLOSE_WRITE, IN_DELETE, IN_MOVED_FROM, IN_MOVED_TO
+		from pyinotify import IN_CLOSE_WRITE, IN_DELETE, IN_MOVED_FROM, IN_MOVED_TO, IN_ISDIR, IN_CREATE
 	except ImportError:
 		log.warning("module 'pyinotify' not found. disabling inotify monitoring")
 		del args["threads"][args["threads"].index("inotify")]
@@ -75,11 +75,22 @@ def run_oswalk():
 			time.sleep(3600)
 	
 class InotifyHandler(pyinotify.ProcessEvent):
-	def my_init(self, db):
+	def my_init(self):
 		log.debug("calling my_init()")
+		self.db = sql.DatabaseConnection(
+				args["db_host"],
+				args["db_user"],
+				args["db_pass"],
+				args["db_name"],
+				args["db_port"],
+				"archive",
+		)
 	
 	def process_IN_CLOSE_WRITE(self, event):
 		log.debug(event)
+		full_path = event.pathname
+
+
 	
 	def process_IN_DELETE(self, event):
 		log.debug(event)
@@ -92,18 +103,11 @@ class InotifyHandler(pyinotify.ProcessEvent):
 
 		
 def run_inotify():
-	masks = IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO
-	
-	db = sql.DatabaseConnection(args["db_host"],
-							args["db_user"],
-							args["db_pass"],
-							args["db_name"],
-							args["db_port"],
-							"archive",
-							)
+	# IN_CREATE is only needed for auto_add to work
+	masks = IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO | IN_ISDIR | IN_CREATE
 	
 	wm = pyinotify.WatchManager()
-	notifier = pyinotify.Notifier(wm, default_proc_fun=InotifyHandler(db))
+	notifier = pyinotify.Notifier(wm, default_proc_fun=InotifyHandler())
 		
 	for watch_dir in args["watch_dirs"]:
 		log.info("adding '{0}' to inotify monitoring".format(watch_dir))
