@@ -30,6 +30,9 @@ INSTALL INSTRUCTIONS
 
 TODO
 ----
+- core
+  - implement daemon code
+  - add various command line options
 - inotify
   - add support for moving/renaming files
 - plugins
