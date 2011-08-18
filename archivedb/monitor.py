@@ -53,7 +53,12 @@ def add_file(db, full_path):
 	data = db.get_fields(watch_dir, path, filename, ["mtime","size"])
 	
 	if not data: # file is new
-		db.insert_file(watch_dir, path, filename, md5sum(full_path), mtime, size)
+		md5 = md5sum(full_path)
+		# md5sum returns None if file was moved/deleted
+		if md5:
+			db.insert_file(watch_dir, path, filename, md5, mtime, size)
+		else:
+			log.warn("file '{0}' was moved/deleted during md5sum creation. not being added to database".format(full_path))
 	else:
 		old_mtime	= data[0][0]
 		old_size	= data[0][1]
@@ -63,8 +68,13 @@ def add_file(db, full_path):
 		log.debug("size = {0}".format(size))
 		# check if it has changed
 		if int(old_mtime) != int(mtime) or int(old_size) != int(size):
-			rows_changed = db.update_file(watch_dir, path, filename, md5sum(full_path), mtime, size)
-			log.debug("rows_changed = {0}".format(rows_changed))
+			md5 = md5sum(full_path)
+			if md5:
+				rows_changed = db.update_file(watch_dir, path, filename, md5, mtime, size)
+				log.debug("rows_changed = {0}".format(rows_changed))
+			else:
+				log.warn("file '{0}' was moved/deleted during md5sum creation. not being added to database".format(full_path))
+
 
 def delete_file(db, full_path):
 	(watch_dir, path, filename) = split_path(args["watch_dirs"], full_path)
