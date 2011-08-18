@@ -57,6 +57,4 @@ def main():
 
 
 if __name__ == 'archivedb.core':
-	log.info("start script")
 	main()
-	log.info("end script")
