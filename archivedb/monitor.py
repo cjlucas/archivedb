@@ -22,7 +22,7 @@ if os.name == 'posix': # linux only
 
 
 # disable oswalk thread for testing
-#del args["threads"][args["threads"].index("oswalk")]
+del args["threads"][args["threads"].index("oswalk")]
 
 def is_ignored_file(f):
 	for regex in args["ignore_files"]:
@@ -167,7 +167,7 @@ class InotifyHandler(ProcessEvent):
 		dest_full_path = event.pathname
 		try:
 			src_full_path = event.src_pathname
-		except NameError:
+		except AttributeError:
 			# if file was moved from outside watch_dirs
 			src_full_path = None
 			
