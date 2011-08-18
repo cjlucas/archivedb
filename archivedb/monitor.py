@@ -45,6 +45,10 @@ def is_ignored_directory(full_path):
 	return(False)
 	
 def add_file(db, full_path):
+	# skip if symlink or not file
+	if not os.path.isfile(full_path) or os.path.islink(full_path):
+		return
+	
 	mtime			= os.stat(full_path).st_mtime
 	size			= os.stat(full_path).st_size
 	
