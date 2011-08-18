@@ -29,7 +29,7 @@ def is_ignored_file(f):
 		if regex == "":
 			continue
 		if re.search(regex, f, re.I):
-			log.info("file '{0}' matched '{1}', skipping.".format(f, regex))
+			log.debug("file '{0}' matched '{1}', skipping.".format(f, regex))
 			return(True)
 	
 	return(False)
@@ -39,7 +39,7 @@ def is_ignored_directory(full_path):
 		if d == "":
 			continue
 		if d in full_path:
-			log.info("directory '{0}' matched ignore_dir '{1}', skipping".format(full_path, d))
+			log.debug("directory '{0}' matched ignore_dir '{1}', skipping".format(full_path, d))
 			return(True)
 	
 	return(False)
@@ -119,7 +119,7 @@ def run_oswalk():
 						add_file(db, full_path)
 					
 		# sleep for a day, figure out a way to make this more customizable
-		log.debug("sleeping")
+		log.info("oswalk thread: sleeping")
 		time.sleep(24*3600)
 	
 class InotifyHandler(ProcessEvent):
