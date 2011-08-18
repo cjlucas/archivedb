@@ -30,7 +30,8 @@ INSTALL INSTRUCTIONS
 
 TODO
 ----
-- look over os.walk portion of code
-- implement pyinotify portion
-- implement IMDb and TVRage "plugins"
-- general bug fixing
+- inotify
+  - add support for moving/renaming files
+- plugins
+  - IMDb and TVRage support
+- bug fixing
