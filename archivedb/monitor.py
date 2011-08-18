@@ -94,7 +94,7 @@ def delete_file(db, full_path):
 		return
 
 def run_oswalk():
-	log.debug("start run_oswalk")
+	log.info("oswalk thread: start")
 	db = sql.DatabaseConnection(args["db_host"],
 								args["db_user"],
 								args["db_pass"],
@@ -120,7 +120,7 @@ def run_oswalk():
 					
 		# sleep for a day, figure out a way to make this more customizable
 		log.info("oswalk thread: sleeping")
-		time.sleep(24*3600)
+		time.sleep(12*3600)
 	
 class InotifyHandler(ProcessEvent):
 	def my_init(self):
