@@ -147,7 +147,10 @@ class InotifyHandler(ProcessEvent):
 	
 	def process_IN_DELETE(self, event):
 		log.debug(event)
-		delete_file(self.db, event.pathname)
+		if event.dir:
+			delete_dir(self.db, event.pathname)
+		else:
+			delete_file(self.db, event.pathname)
 	
 	#def process_IN_MOVED_FROM(self, event):
 	#	log.debug(event)
@@ -186,7 +189,7 @@ def run_inotify():
 	notifier = pyinotify.Notifier(wm, default_proc_fun=InotifyHandler())
 		
 	for watch_dir in args["watch_dirs"]:
-		log.info("adding '{0}' to inotify monitoring".format(watch_dir))
+		log.info("adding '{0}' to inotify monitoring (may take some time)".format(watch_dir))
 		wm.add_watch(watch_dir, masks, rec=True, auto_add=True)
 		
 	notifier.loop()
