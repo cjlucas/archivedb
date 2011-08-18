@@ -92,6 +92,19 @@ def delete_file(db, full_path):
 	else:
 		log.debug("file '{0}' not found in database".format(full_path))
 		return
+	
+def scan_dir(db, watch_dir):
+	if not os.path.isdir(watch_dir):
+		log.warning("watch_dir '{0}' does not exist, skipping".format(watch_dir))
+		return
+	else:
+		log.info("checking watch_dir '{0}'".format(watch_dir))
+	
+	for root, dirs, files in os.walk(watch_dir):
+		for f in files:
+			full_path = os.path.join(root, f)
+			if not is_ignored_file(f) and not is_ignored_directory(full_path):
+				add_file(db, full_path)
 
 def run_oswalk():
 	log.info("oswalk thread: start")
@@ -106,17 +119,7 @@ def run_oswalk():
 	
 	while True:
 		for watch_dir in args["watch_dirs"]:
-			if not os.path.isdir(watch_dir):
-				log.warning("watch_dir '{0}' does not exist, skipping".format(watch_dir))
-				continue
-			else:
-				log.info("checking watch_dir '{0}'".format(watch_dir))
-			
-			for root, dirs, files in os.walk(watch_dir):
-				for f in files:
-					full_path = os.path.join(root, f)
-					if not is_ignored_file(f) and not is_ignored_directory(full_path):
-						add_file(db, full_path)
+			scan_dir(db, watch_dir)
 					
 		# sleep for a day, figure out a way to make this more customizable
 		log.info("oswalk thread: sleeping")
@@ -146,11 +149,33 @@ class InotifyHandler(ProcessEvent):
 		log.debug(event)
 		delete_file(self.db, event.pathname)
 	
-	def process_IN_MOVED_FROM(self, event):
-		log.debug(event)
+	#def process_IN_MOVED_FROM(self, event):
+	#	log.debug(event)
 	
 	def process_IN_MOVED_TO(self, event):
+		""" Note about how the IN_MOVED_TO event works:
+			when a dir/file is moved, if it's source location is being monitored
+			by inotify, there will be an attribute in the event called src_pathname.
+			if the dir/file was moved from somewhere outside of pyinotify's watch,
+			the src_pathname attribute won't exist.
+			
+			Because this program cares about the source of a moved file only if
+			it's actually being monitored, we don't need to handle IN_MOVED_FROM events
+		"""
 		log.debug(event)
+		
+		dest_full_path = event.pathname
+		try:
+			src_full_path = event.src_pathname
+		except NameError:
+			# if file was moved from outside watch_dirs
+			src_full_path = None
+			
+		if not src_full_path:
+			if event.dir:
+				scan_dir(self.db, dest_full_path)
+			else:
+				add_file(self.db, dest_full_path)
 
 		
 def run_inotify():
