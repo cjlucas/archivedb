@@ -124,7 +124,7 @@ class DatabaseConnection:
 		src_path		= src[1]
 		dest_path		= dest[1]
 		
-		query = "SELECT `path` FROM `archive` WHERE `path` REGEXP '{0}(\/|?)'".format(src_path)
+		query = "SELECT `path` FROM `archive` WHERE `path` REGEXP '{0}(\\/|?)'".format(src_path)
 		i = 0
 		rows_changed = 0
 		num_rows = self.c.execute(query)
