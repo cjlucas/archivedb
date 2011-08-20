@@ -182,7 +182,10 @@ class InotifyHandler(ProcessEvent):
 			else:
 				src_split_path	= split_path(args["watch_dirs"], src_full_path)
 				dest_split_path	= split_path(args["watch_dirs"], dest_full_path)
-				self.db.move_file(src_split_path, dest_split_path)
+				rows_changed = self.db.move_file(src_split_path, dest_split_path)
+				log.debug("rows_changed = {0}".format(rows_changed))
+				if rows_changed == 0:
+					log.warn("no rows were changed, maybe {0} wasn't in the database?".format(src_full_path))
 		else:
 			if event.dir:
 				scan_dir(self.db, dest_full_path)
@@ -201,10 +204,8 @@ def run_inotify():
 		log.info("adding '{0}' to inotify monitoring (may take some time)".format(watch_dir))
 		wm.add_watch(watch_dir, masks, rec=True, auto_add=True)
 		
+	log.info("starting inotify monitoring")
 	notifier.loop()
-		
-		
-		
 
 		
 if __name__ == 'archivedb.monitor':
