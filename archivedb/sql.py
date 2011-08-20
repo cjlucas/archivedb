@@ -124,16 +124,30 @@ class DatabaseConnection:
 		src_path		= src[1]
 		dest_path		= dest[1]
 		
-		query = "SELECT `path` FROM `archive` WHERE `path` REGEXP '{0}(\\/|?)'".format(src_path)
-		log.info(query)
-		i = 0
+		query = "SELECT `id`,`path` FROM `archive` WHERE `path` REGEXP '{0}(\\/|?)'".format(src_path)
+		log.debug(query)
 		rows_changed = 0
-		num_rows = self.c.execute(query)
 		
-		while i < num_rows:
-			old_path = self.c.fetchone()[0]
-			new_path = old_path.replace(src_path, dest_path)
-			log.info("new_path = {0}".format(new_path))
+		data = self.c.fetchone()
+		while data:
+			id			= data[0]
+			old_path	= data[1]
+			new_path	= old_path.replace(src_path, dest_path).strip(os.sep)
+			
+			query = """UPDATE `archive` SET `watch_dir` = '{0}', path = '{1}'
+					WHERE `id` = '{2}'""".format(
+						dest_watch_dir,
+						new_path,
+						id,
+					)
+			
+			log.debug(query)
+			rows_changed += self.c.execute(query)
+					
+			data = self.c.fetchone()
+			
+		return(rows_changed)
+
 			
 	def get_fields(self, watch_dir, path, filename, fields):
 		if fields.__class__ == str:
