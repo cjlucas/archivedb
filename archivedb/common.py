@@ -23,7 +23,7 @@ def split_path(watch_dirs, p):
 	
 	Args:
 	watch_dirs - list of directories script is watching
-	p - full path to file
+	p - full path to file (if p is a directory [requires trailing slash], file_name will be "")
 	
 	Returns: tuple (watch_dir, base_path, file_name)
 	"""
@@ -37,7 +37,7 @@ def split_path(watch_dirs, p):
 		split = re.split("^{0}".format(d), p)
 		if split[0] == "":
 			watch_dir = d.rstrip(os.sep)
-			base_path = split[1].strip(os.sep)
+			base_path = split[1].lstrip(os.sep)
 			break
 		
 	base_path, file_name = os.path.split(base_path)
