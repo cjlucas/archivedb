@@ -4,7 +4,7 @@ def get_logger(log_path, log_file):
 	#LOG_PATH = os.path.join(os.path.expanduser(os.path.split(sys.argv[0])[0]), "logs")
 	#LOG_FILE = "archivedb.log"
 	LOG_FORMAT 		= "%(asctime)s :: %(levelname)-8s :: %(filename)s:%(lineno)s :: %(funcName)s :: %(message)s"
-	CONSOLE_FORMAT	= "%(asctime)s :: %(levelname)-8s :: %(message)s"
+	CONSOLE_FORMAT	= "%(asctime)s :: %(levelname)-8s :: %(funcName)s :: %(message)s"
 	# create logs directory if doesn't exist
 	if not os.path.isdir(log_path):
 		os.mkdir(log_path)
