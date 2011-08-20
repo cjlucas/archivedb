@@ -144,7 +144,7 @@ class DatabaseConnection:
 					)
 			
 			log.debug(query)
-			rows_changed += self.temp_c.execute(query)
+			rows_changed += temp_c.execute(query)
 					
 			data = self.c.fetchone()
 			
