@@ -1,4 +1,4 @@
-import sys, pymysql, logging
+import os, sys, pymysql, logging
 import archivedb.config as config
 from archivedb.common import enum_to_list, list_to_enum, md5sum, escape_quotes
 
