@@ -128,6 +128,7 @@ class DatabaseConnection:
 		self.c.execute(query)
 		log.debug(query)
 		rows_changed = 0
+		temp_c = self.db.cursor()
 		
 		data = self.c.fetchone()
 		while data:
@@ -143,7 +144,7 @@ class DatabaseConnection:
 					)
 			
 			log.debug(query)
-			rows_changed += self.c.execute(query)
+			rows_changed += self.temp_c.execute(query)
 					
 			data = self.c.fetchone()
 			
