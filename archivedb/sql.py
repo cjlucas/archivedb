@@ -130,7 +130,7 @@ class DatabaseConnection:
 		num_rows = c.execute(query)
 		
 		while i < num_rows:
-			old_path = c.fetchone()[0]
+			old_path = self.c.fetchone()[0]
 			new_path = old_path.replace(src_path, dest_path)
 			log.info("new_path = {0}".format(new_path))
 			
