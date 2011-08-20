@@ -149,11 +149,16 @@ class InotifyHandler(ProcessEvent):
 		log.debug(event)
 		delete_file(self.db, event.pathname)
 	
-	#def process_IN_MOVED_FROM(self, event):
-	#	log.debug(event)
+	def process_IN_MOVED_FROM(self, event):
+		"""
+			Used to delete files from database that have been moved out of
+			the program's watch_dirs
+		"""
+		log.debug(event)
 	
 	def process_IN_MOVED_TO(self, event):
-		""" Note about how the IN_MOVED_TO event works:
+		"""
+			Note about how the IN_MOVED_TO event works:
 			when a dir/file is moved, if it's source location is being monitored
 			by inotify, there will be an attribute in the event called src_pathname.
 			if the dir/file was moved from somewhere outside of pyinotify's watch,
@@ -171,7 +176,14 @@ class InotifyHandler(ProcessEvent):
 			# if file was moved from outside watch_dirs
 			src_full_path = None
 			
-		if not src_full_path:
+		if src_full_path:
+			if event.dir:
+				self.db.move_directory()
+			else:
+				src_split_path	= split_path(args["watch_dirs"], src_full_path)
+				dest_split_path	= split_path(args["watch_dirs"], dest_full_path)
+				self.db.move_file(src_split_path, dest_split_path)
+		else:
 			if event.dir:
 				scan_dir(self.db, dest_full_path)
 			else:

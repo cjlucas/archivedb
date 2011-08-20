@@ -99,12 +99,24 @@ class DatabaseConnection:
 		rows_changed = self.c.execute(query)
 		return(rows_changed)
 		
+	def move_file(self, src, dest):
+		query = """UPDATE `archive` SET watch_dir = '{0}', path = '{1}',
+				filename = '{2}' WHERE watch_dir = '{3}' and path = '{4}'
+				and filename = '{5}'""".format(
+					dest[0], dest[1], dest[2],
+					src[0], src[1], src[2],
+				)
+				
+		log.info(query)
+		
 	def delete_file(self, id):
 		query = """DELETE FROM `archive` WHERE id = '{0}'""".format(id)
 		
 		log.debug(query)
 		rows_changed = self.c.execute(query)
 		return(rows_changed)
+		
+	#def move_directory(self)
 			
 	def get_fields(self, watch_dir, path, filename, fields):
 		if fields.__class__ == str:
