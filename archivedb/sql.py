@@ -107,7 +107,7 @@ class DatabaseConnection:
 					src[0], src[1], src[2],
 				)
 				
-		log.info(query)
+		log.debug(query)
 		rows_changed = self.c.execute(query)
 		return(rows_changed)
 		
@@ -118,7 +118,21 @@ class DatabaseConnection:
 		rows_changed = self.c.execute(query)
 		return(rows_changed)
 		
-	#def move_directory(self)
+	def move_directory(self, src, dest):
+		src_watch_dir	= src[0]
+		dest_watch_dir	= dest[0]
+		src_path		= src[1]
+		dest_path		= dest[1]
+		
+		query = "SELECT `path` FROM `archive` WHERE `path` REGEXP '{0}(\/|?)'".format(src_path)
+		i = 0
+		rows_changed = 0
+		num_rows = c.execute(query)
+		
+		while i < num_rows:
+			old_path = c.fetchone()[0]
+			new_path = old_path.replace(src_path, dest_path)
+			log.info("new_path = {0}".format(new_path))
 			
 	def get_fields(self, watch_dir, path, filename, fields):
 		if fields.__class__ == str:
