@@ -125,6 +125,7 @@ class DatabaseConnection:
 		dest_path		= dest[1]
 		
 		query = "SELECT `path` FROM `archive` WHERE `path` REGEXP '{0}(\\/|?)'".format(src_path)
+		log.info(query)
 		i = 0
 		rows_changed = 0
 		num_rows = self.c.execute(query)
