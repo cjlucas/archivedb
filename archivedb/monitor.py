@@ -22,7 +22,7 @@ if os.name == 'posix': # linux only
 
 
 # disable oswalk thread for testing
-del args["threads"][args["threads"].index("oswalk")]
+#del args["threads"][args["threads"].index("oswalk")]
 
 def is_ignored_file(f):
 	for regex in args["ignore_files"]:
