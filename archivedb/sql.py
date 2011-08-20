@@ -108,6 +108,8 @@ class DatabaseConnection:
 				)
 				
 		log.info(query)
+		rows_changed = self.c.execute(query)
+		return(rows_changed)
 		
 	def delete_file(self, id):
 		query = """DELETE FROM `archive` WHERE id = '{0}'""".format(id)
