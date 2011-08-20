@@ -177,8 +177,8 @@ class InotifyHandler(ProcessEvent):
 			src_full_path = None
 			
 		if src_full_path:
-			src_split_path	= split_path(args["watch_dirs"], src_full_path)
-			dest_split_path	= split_path(args["watch_dirs"], dest_full_path)
+			src_split_path	= split_path(args["watch_dirs"], src_full_path + os.sep)
+			dest_split_path	= split_path(args["watch_dirs"], dest_full_path + os.sep)
 			
 			if event.dir:
 				rows_changed = self.db.move_directory(src_split_path, dest_split_path)
