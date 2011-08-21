@@ -3,6 +3,10 @@ import os, re, hashlib
 def md5sum(f, block_size=2**20):
 	md5 = hashlib.md5()
 	
+	# check if file was moved/deleted before opening
+	if not os.path.isfile(f):
+		return(None)
+		
 	with open(f, "rb") as fp:
 		while True:
 			# check if file has moved/deleted during md5 creation
