@@ -28,7 +28,7 @@ class DatabaseConnection:
 			self.create_connection()
 
 	def table_exists(self, table_name):
-		check_connection()
+		self.check_connection()
 		self.c.execute("SHOW TABLES")
 		tables = self.c.fetchall()
 		tables = [t[0] for t in tables]
@@ -45,7 +45,7 @@ class DatabaseConnection:
 		log.info("database '{0}' created".format(self.database))
 		
 	def create_table(self, query):
-		check_connection()
+		self.check_connection()
 		self.c.execute(query)
 		log.info("table created")
 	
@@ -73,7 +73,7 @@ class DatabaseConnection:
 				sys.exit(1)
 		
 	def insert_file(self, watch_dir, path, filename, md5, mtime, size):
-		check_connection()
+		self.check_connection()
 		watch_dir, path, filename = (escape_quotes(watch_dir),
 									 escape_quotes(path),
 									 escape_quotes(filename),
@@ -95,7 +95,7 @@ class DatabaseConnection:
 		self.c.execute(query)
 	
 	def update_file(self, watch_dir, path, filename, md5, mtime, size):
-		check_connection()
+		self.check_connection()
 		watch_dir, path, filename = (escape_quotes(watch_dir),
 									 escape_quotes(path),
 									 escape_quotes(filename),
@@ -117,7 +117,7 @@ class DatabaseConnection:
 		return(rows_changed)
 		
 	def move_file(self, src, dest):
-		check_connection()
+		self.check_connection()
 		query = """UPDATE `archive` SET watch_dir = '{0}', path = '{1}',
 				filename = '{2}' WHERE watch_dir = '{3}' and path = '{4}'
 				and filename = '{5}'""".format(
@@ -130,7 +130,7 @@ class DatabaseConnection:
 		return(rows_changed)
 		
 	def delete_file(self, id):
-		check_connection()
+		self.check_connection()
 		query = """DELETE FROM `archive` WHERE id = '{0}'""".format(id)
 		
 		log.debug(query)
@@ -138,7 +138,7 @@ class DatabaseConnection:
 		return(rows_changed)
 		
 	def move_directory(self, src, dest):
-		check_connection()
+		self.check_connection()
 		src_watch_dir	= src[0]
 		dest_watch_dir	= dest[0]
 		src_path		= src[1]
@@ -172,7 +172,7 @@ class DatabaseConnection:
 
 			
 	def get_fields(self, watch_dir, path, filename, fields):
-		check_connection()
+		self.check_connection()
 		if fields.__class__ == str:
 			fields = [fields]
 		watch_dir, path, filename = (escape_quotes(watch_dir),
@@ -197,7 +197,7 @@ class DatabaseConnection:
 			
 		
 	def get_enum(self, field_index=1):
-		check_connection()
+		self.check_connection()
 		self.c.execute("DESCRIBE `{0}`".format(self.table_name))
 		# field type always at index pos 1
 		enum_line = self.c.fetchall()[field_index][1]
@@ -206,7 +206,7 @@ class DatabaseConnection:
 		return(watch_list)
 		
 	def alter_enum(self, field_name, watch_dirs):
-		check_connection()
+		self.check_connection()
 		query = "ALTER TABLE `{0}` MODIFY `{1}` {2}".format(
 			self.table_name,
 			field_name,
