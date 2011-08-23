@@ -151,8 +151,10 @@ class InotifyHandler(ProcessEvent):
 			process_IN_MOVED_FROM sets self.last_moved_from to the latest
 			moved file
 			
-			This function will check event.pathname with self.last_moved_from,
-			if they're equal, then 
+			This function will check event.src_pathname with self.last_moved_from,
+			if they're equal, then the file is moved within the watch_dirs
+			
+			This function should be called at the top of ALL process_* functions
 			
 		"""
 		delfile = False
