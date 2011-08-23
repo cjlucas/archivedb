@@ -136,6 +136,7 @@ class InotifyHandler(ProcessEvent):
 				args["db_port"],
 				"archive",
 		)
+		self.last_moved_from = ""
 	
 	def process_IN_CLOSE_WRITE(self, event):
 		log.debug(event)
@@ -164,19 +165,17 @@ class InotifyHandler(ProcessEvent):
 			by inotify, there will be an attribute in the event called src_pathname.
 			if the dir/file was moved from somewhere outside of pyinotify's watch,
 			the src_pathname attribute won't exist.
-			
-			Because this program cares about the source of a moved file only if
-			it's actually being monitored, we don't need to handle IN_MOVED_FROM events
 		"""
 		log.debug(event)
 		
 		dest_full_path	= event.pathname
 		dest_filename	= event.name
 		if not is_ignored_file(dest_filename) and not is_ignored_directory(dest_full_path):
+			# event.src_pathname will only exist if file was moved from a
+			# directory that is being watched
 			try:
 				src_full_path = event.src_pathname
 			except AttributeError:
-				# if file was moved from outside watch_dirs
 				src_full_path = None
 				
 			if src_full_path:
@@ -212,6 +211,9 @@ class InotifyHandler(ProcessEvent):
 			# the src file should just be deleted from the database
 			if src_full_path:
 				delete_file(self.db, src_full_path)
+				
+	def process_default(self, event):
+		print("THIS TRIGGERS")
 		
 def run_inotify():
 	# IN_CREATE is only needed for auto_add to work
