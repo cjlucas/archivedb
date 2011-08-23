@@ -160,7 +160,13 @@ class InotifyHandler(ProcessEvent):
 		if self.last_moved_from:
 			log.debug("self.last_moved_from = {0}".format(self.last_moved_from))
 			if event.maskname == "IN_MOVED_TO":
-				if event.pathname == self.last_moved_from:
+				# check if IN_MOVED_TO contains src_pathname attribute
+				# (damn them for not just setting src_pathname to None)
+				try:
+					event.src_pathname
+				except:
+					delfile = True
+				if event.src_pathname == self.last_moved_from:
 					self.last_moved_from = ""
 					return
 				else:
@@ -173,6 +179,7 @@ class InotifyHandler(ProcessEvent):
 		if delfile:
 			log.debug("it is assumed file was moved outside watch_dirs, deleting.")
 			delete_file(self.db, self.last_moved_from)
+			self.last_moved_from = ""
 	
 	def process_IN_CLOSE_WRITE(self, event):
 		log.debug(event)
