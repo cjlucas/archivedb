@@ -221,16 +221,16 @@ class InotifyHandler(ProcessEvent):
 		log.debug(event)
 		self.check_last_moved_from(event)
 
+		# event.src_pathname will only exist if file was moved from a
+		# directory that is being watched
+		try:
+			src_full_path = event.src_pathname
+		except AttributeError:
+			src_full_path = None
+			
 		dest_full_path	= event.pathname
 		dest_filename	= event.name
 		if not is_ignored_file(dest_filename) and not is_ignored_directory(dest_full_path):
-			# event.src_pathname will only exist if file was moved from a
-			# directory that is being watched
-			try:
-				src_full_path = event.src_pathname
-			except AttributeError:
-				src_full_path = None
-				
 			if src_full_path:
 				# append / so split_path knows it's input is a directory
 				if event.dir:
