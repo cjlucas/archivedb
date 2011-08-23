@@ -169,41 +169,48 @@ class InotifyHandler(ProcessEvent):
 		"""
 		log.debug(event)
 		
-		dest_full_path = event.pathname
-		try:
-			src_full_path = event.src_pathname
-		except AttributeError:
-			# if file was moved from outside watch_dirs
-			src_full_path = None
-			
-		if src_full_path:
-			# append / so split_path knows it's input is a directory
-			if event.dir:
-				src_full_path	+= os.sep
-				dest_full_path	+= os.sep
-			
-			src_split_path	= split_path(args["watch_dirs"], src_full_path)
-			dest_split_path	= split_path(args["watch_dirs"], dest_full_path)
-			log.debug("src_split_path	= {0}".format(src_split_path))
-			log.debug("dest_split_path	= {0}".format(dest_split_path))
-			
-			if event.dir:
-				rows_changed = self.db.move_directory(src_split_path, dest_split_path)
+		dest_full_path	= event.pathname
+		dest_filename	= event.name
+		if not is_ignored_file(dest_filename) and not is_ignored_directory(dest_full_path):
+			try:
+				src_full_path = event.src_pathname
+			except AttributeError:
+				# if file was moved from outside watch_dirs
+				src_full_path = None
+				
+			if src_full_path:
+				# append / so split_path knows it's input is a directory
+				if event.dir:
+					src_full_path	+= os.sep
+					dest_full_path	+= os.sep
+				
+				src_split_path	= split_path(args["watch_dirs"], src_full_path)
+				dest_split_path	= split_path(args["watch_dirs"], dest_full_path)
+				log.debug("src_split_path	= {0}".format(src_split_path))
+				log.debug("dest_split_path	= {0}".format(dest_split_path))
+				
+				if event.dir:
+					rows_changed = self.db.move_directory(src_split_path, dest_split_path)
+				else:
+					rows_changed = self.db.move_file(src_split_path, dest_split_path)
+				
+				log.debug("rows_changed = {0}".format(rows_changed))
+				if rows_changed == 0:
+					# since update was unsuccesful, it's presumed that the original
+					# file was not in the database, so we'll just insert it instead
+					log.debug("no rows were changed, inserting {0} into database instead.".format(dest_full_path))
+					add_file(self.db, dest_full_path)
 			else:
-				rows_changed = self.db.move_file(src_split_path, dest_split_path)
-			
-			log.debug("rows_changed = {0}".format(rows_changed))
-			if rows_changed == 0:
-				# since update was unsuccesful, it's presumed that the original
-				# file was not in the database, so we'll just insert it instead
-				log.debug("no rows were changed, inserting {0} into database instead.".format(dest_full_path))
-				add_file(self.db, dest_full_path)
+				if event.dir:
+					scan_dir(self.db, dest_full_path)
+				else:
+					add_file(self.db, dest_full_path)
 		else:
-			if event.dir:
-				scan_dir(self.db, dest_full_path)
-			else:
-				add_file(self.db, dest_full_path)
-
+			# since either the file or the path of the file was flagged as ignored,
+			# it's not going to be updated in the database. therefor,
+			# the src file should just be deleted from the database
+			if src_full_path:
+				delete_file(self.db, src_full_path)
 		
 def run_inotify():
 	# IN_CREATE is only needed for auto_add to work
