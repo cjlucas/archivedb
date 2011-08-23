@@ -137,9 +137,47 @@ class InotifyHandler(ProcessEvent):
 				"archive",
 		)
 		self.last_moved_from = ""
+		
+	def check_last_moved_from(self, event):
+		"""
+			This is my solution for recognizing when files are moved
+			outside of the given watch directories which should be deleted:
+			
+			When moving a file within the given watch directories, it is
+			assumed that immediately after the IN_MOVED_FROM event,
+			an IN_MOVED_TO event follows. So if there is no IN_MOVED_TO
+			event, it's assumed that the file was moved outside of the watch directories
+			
+			process_IN_MOVED_FROM sets self.last_moved_from to the latest
+			moved file
+			
+			This function will check event.pathname with self.last_moved_from,
+			if they're equal, then 
+			
+		"""
+		delfile = False
+		# if var is "", just skip
+		if self.last_moved_from:
+			log.debug("self.last_moved_from = {0}".format(self.last_moved_from))
+			if event.maskname == "IN_MOVED_TO":
+				if event.pathname == self.last_moved_from:
+					self.last_moved_from = ""
+					return
+				else:
+					delfile = True
+			else:
+				# if any event triggers and last_moved_from is not "", then
+				# assume IN_MOVED_TO was never triggered for that file and delete it
+				delfile = True
+		
+		if delfile:
+			log.debug("it is assumed file was moved outside watch_dirs, deleting.")
+			delete_file(self.db, self.last_moved_from)
 	
 	def process_IN_CLOSE_WRITE(self, event):
 		log.debug(event)
+		self.check_last_moved_from(event)
+
 		full_path = event.pathname
 		f = event.name
 		if not is_ignored_file(f) and not is_ignored_directory(full_path):
@@ -148,6 +186,8 @@ class InotifyHandler(ProcessEvent):
 	
 	def process_IN_DELETE(self, event):
 		log.debug(event)
+		self.check_last_moved_from(event)
+
 		if not event.dir:
 			delete_file(self.db, event.pathname)
 	
@@ -157,6 +197,9 @@ class InotifyHandler(ProcessEvent):
 			the program's watch_dirs
 		"""
 		log.debug(event)
+		self.check_last_moved_from(event)
+		
+		self.last_moved_from = event.pathname
 	
 	def process_IN_MOVED_TO(self, event):
 		"""
@@ -167,7 +210,8 @@ class InotifyHandler(ProcessEvent):
 			the src_pathname attribute won't exist.
 		"""
 		log.debug(event)
-		
+		self.check_last_moved_from(event)
+
 		dest_full_path	= event.pathname
 		dest_filename	= event.name
 		if not is_ignored_file(dest_filename) and not is_ignored_directory(dest_full_path):
@@ -211,9 +255,6 @@ class InotifyHandler(ProcessEvent):
 			# the src file should just be deleted from the database
 			if src_full_path:
 				delete_file(self.db, src_full_path)
-				
-	def process_default(self, event):
-		print("THIS TRIGGERS")
 		
 def run_inotify():
 	# IN_CREATE is only needed for auto_add to work
