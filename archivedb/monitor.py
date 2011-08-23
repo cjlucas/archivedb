@@ -147,7 +147,8 @@ class InotifyHandler(ProcessEvent):
 	
 	def process_IN_DELETE(self, event):
 		log.debug(event)
-		delete_file(self.db, event.pathname)
+		if not event.dir:
+			delete_file(self.db, event.pathname)
 	
 	def process_IN_MOVED_FROM(self, event):
 		"""
