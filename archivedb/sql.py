@@ -118,6 +118,17 @@ class DatabaseConnection:
 		
 	def move_file(self, src, dest):
 		self.check_connection()
+		dest = [
+			escape_quotes(dest[0]),
+			escape_quotes(dest[1]),
+			escape_quotes(dest[2]),
+		]
+		src = [
+			escape_quotes(src[0]),
+			escape_quotes(src[1]),
+			escape_quotes(src[2]),
+		]
+		
 		query = """UPDATE `archive` SET watch_dir = '{0}', path = '{1}',
 				filename = '{2}' WHERE watch_dir = '{3}' and path = '{4}'
 				and filename = '{5}'""".format(
