@@ -251,7 +251,7 @@ class InotifyHandler(ProcessEvent):
 				if rows_changed == 0:
 					# since update was unsuccesful, it's presumed that the original
 					# file was not in the database, so we'll just insert it instead
-					log.debug("no rows were changed, inserting {0} into database instead.".format(dest_full_path))
+					log.debug("no rows were changed during UPDATE, inserting {0} into database.".format(dest_full_path))
 					add_file(self.db, dest_full_path)
 			else:
 				if event.dir:
