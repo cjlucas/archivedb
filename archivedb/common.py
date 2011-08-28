@@ -6,16 +6,20 @@ def md5sum(f, block_size=2**20):
 	# check if file was moved/deleted before opening
 	if not os.path.isfile(f):
 		return(None)
-		
-	with open(f, "rb") as fp:
-		while True:
-			# check if file has moved/deleted during md5 creation
-			if not os.path.isfile(f):
-				return(None)
-			data = fp.read(block_size)
-			if not data:
-				break
-			md5.update(data)
+	
+	try:
+		with open(f, "rb") as fp:
+			while True:
+				# check if file has moved/deleted during md5 creation
+				if not os.path.isfile(f):
+					return(None)
+				data = fp.read(block_size)
+				if not data:
+					break
+				md5.update(data)
+	except IOError:
+		# another failsafe in case open() throws error
+		return(None)
 	
 	return(md5.hexdigest())
 	
