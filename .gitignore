@@ -1,4 +1,5 @@
-/archivedb.komodoproject
+/*.komodoproject
+/.*project
 /temp
 *.pyc
 *~
