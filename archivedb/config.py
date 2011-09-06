@@ -100,12 +100,14 @@ def validate_config(conf_file):
 		# if item is required, print error and halt the program
 		conf_dict = {pair[0]:pair[1] for pair in config.items(sec)}
 		log.debug("conf_dict = {0}".format(str(conf_dict)))
+		
 		for k in keys_sorted:
 			if k in conf_dict:
 				log.debug("conf_dict[{0}]	= {1}".format(k, conf_dict[k]))
 			else:
-				log.debug("conf_dict[{0}] doesn't exist.".format(k))
+				log.debug("conf_dict[{0}]	= N/A".format(k))
 			log.debug("defaults[{0}]	= {1}".format(k, defaults[k]))
+			
 			if k in required_keys:
 				if k not in conf_dict:
 						log.fatal("config file missing required key '{0}' (section: {1}) , exiting.".format(k, sec))
@@ -117,7 +119,10 @@ def validate_config(conf_file):
 					sys.exit(1)
 			else:
 				if k not in conf_dict:
-					log.warning("key: '{0} not found in config, using default value.".format(k))
+					# since we're only looking at non-required keys, we can
+					# use the default value (from get_default_params) if key
+					# isn't specified in conf file
+					log.warning("key: '{0}' not found in config, using default value: '{1}'".format(k, defaults[k]))
 					config.set(sec, k, defaults[k])
 				else:
 					config.set(sec, k, conf_dict[k])
