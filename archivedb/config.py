@@ -104,7 +104,7 @@ def validate_config(conf_file):
 			if k not in conf_dict:
 				log.debug("conf_dict[{0}]	= {1}".format(k, conf_dict[k]))
 			else:
-				log.debug("conf_dict[{0}] doesn't exist.".format(f))
+				log.debug("conf_dict[{0}] doesn't exist.".format(k))
 			log.debug("defaults[{0}]	= {1}".format(k, defaults[k]))
 			if k in required_keys:
 				if k not in conf_dict:
