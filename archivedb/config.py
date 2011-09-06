@@ -175,7 +175,7 @@ def format_args(args):
 			try:
 				args[k] = int(args[k])
 			except ValueError:
-				log.critical("Given value for key '{0}' is not a number. Exiting.".format(k))
+				log.critical("Given value for key '{0}' is not a valid integer. Check config.".format(k))
 				sys.exit(1)
 
 	# split values
