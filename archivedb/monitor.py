@@ -120,9 +120,8 @@ def run_oswalk():
 		for watch_dir in args["watch_dirs"]:
 			scan_dir(db, watch_dir)
 					
-		# sleep for a day, figure out a way to make this more customizable
 		log.info("oswalk thread: sleeping")
-		time.sleep(12*3600)
+		time.sleep(args["scan_interval"]*3600)
 	
 class InotifyHandler(ProcessEvent):
 	def my_init(self):
