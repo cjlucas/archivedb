@@ -172,8 +172,12 @@ def format_args(args):
 	
 	for k in cast_int:
 		if k in args:
-			args[k] = int(args[k])
-			
+			try:
+				args[k] = int(args[k])
+			except ValueError:
+				log.critical("Given value for key '{0}' is not a number. Exiting.".format(k))
+				sys.exit(1)
+
 	# split values
 	split_dict = {
 		"watch_dirs"	: "|",
