@@ -101,7 +101,7 @@ def validate_config(conf_file):
 		conf_dict = {pair[0]:pair[1] for pair in config.items(sec)}
 		log.debug("conf_dict = {0}".format(str(conf_dict)))
 		for k in keys_sorted:
-			if k not in conf_dict:
+			if k in conf_dict:
 				log.debug("conf_dict[{0}]	= {1}".format(k, conf_dict[k]))
 			else:
 				log.debug("conf_dict[{0}] doesn't exist.".format(k))
