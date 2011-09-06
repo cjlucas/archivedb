@@ -108,16 +108,15 @@ def scan_dir(db, watch_dir):
 
 def run_oswalk():
 	log.info("oswalk thread: start")
-	db = sql.DatabaseConnection(args["db_host"],
-								args["db_user"],
-								args["db_pass"],
-								args["db_name"],
-								args["db_port"],
-								"archive",
-								)
-	#db.create_conn()
 	
 	while True:
+		db = sql.DatabaseConnection(args["db_host"],
+									args["db_user"],
+									args["db_pass"],
+									args["db_name"],
+									args["db_port"],
+									"archive",
+									)
 		for watch_dir in args["watch_dirs"]:
 			scan_dir(db, watch_dir)
 					
