@@ -27,6 +27,7 @@ def get_default_params(section):
 		"watch_dirs"	: "",
 		"ignore_dirs"	: "",
 		"ignore_files"	: ".*\!ut.* ^\.",
+		"scan_interval"	: "12",
 	}
 	defaults["db"] = {
 		"host"	: "localhost",
@@ -36,7 +37,7 @@ def get_default_params(section):
 	}
 	
 	keys_sorted["general"] = [
-		"watch_dirs", "ignore_dirs", "ignore_files",
+		"watch_dirs", "ignore_dirs", "ignore_files", "scan_interval"
 	]
 	keys_sorted["db"] = [
 		"host", "port", "user", "pass",
@@ -155,7 +156,7 @@ def format_args(args):
 	"""
 	
 	# convert values to int
-	cast_int = ["db_port"]
+	cast_int = ["db_port", "scan_interval"]
 	
 	for k in cast_int:
 		if k in args:
@@ -186,7 +187,7 @@ if __name__ == 'archivedb.config':
 	CONF_FILE = os.path.expanduser("~/.archivedb.conf")
 	# create config if none exists
 	if not os.path.exists(CONF_FILE):
-		log.info("conf file not found, creating one at {0}".format(CONF_FILE))
+		#log.info("conf file not found, creating one at {0}".format(CONF_FILE))
 		#create_default_config(CONF_FILE)
 		log.critical("{0} not found, edit example.conf and copy.".format(CONF_FILE))
 		sys.exit(1)
