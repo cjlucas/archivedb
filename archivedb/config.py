@@ -101,7 +101,10 @@ def validate_config(conf_file):
 		conf_dict = {pair[0]:pair[1] for pair in config.items(sec)}
 		log.debug("conf_dict = {0}".format(str(conf_dict)))
 		for k in keys_sorted:
-			log.debug("conf_dict[{0}]	= {1}".format(k, conf_dict[k]))
+			if k not in conf_dict:
+				log.debug("conf_dict[{0}]	= {1}".format(k, conf_dict[k]))
+			else:
+				log.debug("conf_dict[{0}] doesn't exist.".format(f))
 			log.debug("defaults[{0}]	= {1}".format(k, defaults[k]))
 			if k in required_keys:
 				if k not in conf_dict:
@@ -113,7 +116,11 @@ def validate_config(conf_file):
 					log.fatal("config file has required key '{0}' (section: {1}), but default value is not allowed, exiting".format(k, sec))
 					sys.exit(1)
 			else:
-				config.set(sec, k, conf_dict[k])
+				if k not in conf_dict:
+					log.warning("key: '{0} not found in config, using default value.".format(k))
+					config.set(sec, k, defaults[k])
+				else:
+					config.set(sec, k, conf_dict[k])
 				
 	return(config)
 
