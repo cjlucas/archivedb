@@ -1,5 +1,8 @@
 /*.komodoproject
 /.*project
+/build
+/dist
+/*.egg-info
 /temp
 *.pyc
 *~
