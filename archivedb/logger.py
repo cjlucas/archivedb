@@ -1,13 +1,13 @@
 import os, sys, logging, logging.handlers
+from archivedb.config import args
 
-def get_logger(log_path, log_file):
+def get_logger(log_path):
 	#LOG_PATH = os.path.join(os.path.expanduser(os.path.split(sys.argv[0])[0]), "logs")
 	#LOG_FILE = "archivedb.log"
 	LOG_FORMAT 		= "%(asctime)s :: %(levelname)-8s :: %(filename)s:%(lineno)s :: %(funcName)s :: %(message)s"
 	CONSOLE_FORMAT	= "%(asctime)s :: %(levelname)-8s :: %(funcName)s :: %(message)s"
-	# create logs directory if doesn't exist
-	if not os.path.isdir(log_path):
-		os.mkdir(log_path)
+	if not os.path.isdir(os.path.dirname(log_path)):
+		os.mkdir(os.path.dirname(log_path))
 
 	log_formatter		= logging.Formatter(LOG_FORMAT)
 	console_formatter	= logging.Formatter(CONSOLE_FORMAT)	
@@ -15,8 +15,8 @@ def get_logger(log_path, log_file):
 	log.setLevel(logging.DEBUG)
 
 	rotator = logging.handlers.RotatingFileHandler(
-		filename=os.path.join(log_path, log_file),
-		maxBytes=5242880,
+		filename=log_path,
+		maxBytes=20000000,
 		backupCount=5,
 	)
 	console = logging.StreamHandler()
@@ -31,3 +31,7 @@ def get_logger(log_path, log_file):
 	log.addHandler(console)
 	
 	return(log)
+
+if __name__ == "archivedb.logger":
+	# create log file
+	log = get_logger(args["log_path"])

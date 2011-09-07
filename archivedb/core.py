@@ -1,8 +1,6 @@
-import os, sys, re, time
+import os, sys, re, time, logging
 
 import archivedb.logger
-log = archivedb.logger.get_logger("logs", "archivedb.log")
-
 import archivedb.config as config
 import archivedb.threads
 import archivedb.sql
@@ -57,4 +55,5 @@ def main():
 
 
 if __name__ == 'archivedb.core':
+	log = logging.getLogger(__name__)
 	main()

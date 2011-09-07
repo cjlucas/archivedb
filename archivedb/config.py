@@ -28,6 +28,7 @@ def get_default_params(section):
 		"ignore_dirs"	: "",
 		"ignore_files"	: ".*\!ut.* ^\.",
 		"scan_interval"	: "12",
+		"log_path"		: "/tmp/archivedb.log"
 	}
 	defaults["db"] = {
 		"host"	: "localhost",
@@ -37,7 +38,7 @@ def get_default_params(section):
 	}
 	
 	keys_sorted["general"] = [
-		"watch_dirs", "ignore_dirs", "ignore_files", "scan_interval"
+		"watch_dirs", "ignore_dirs", "ignore_files", "scan_interval", "log_path",
 	]
 	keys_sorted["db"] = [
 		"host", "port", "user", "pass",
