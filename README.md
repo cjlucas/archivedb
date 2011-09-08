@@ -20,13 +20,13 @@ REQUIREMENTS
 - MySQL
   - 4.1 or higher
 
-- PyMySQL
-  - http://www.pymysql.org/ 
+- [PyMySQL](http://www.pymysql.org/) 
 
 
 INSTALL INSTRUCTIONS
 --------------------
-- Dunno yet
+- Run "python setup.py install"
+- Copy bin/archivedb into /usr/bin
 
 TODO
 ----
