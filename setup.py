@@ -1,7 +1,12 @@
 from setuptools import setup
-
+import sys
 
 version = __import__('archivedb').version
+
+if sys.version_info > (3, 0):
+	REQUIRED = ["PyMySQL3",]
+elif sys.version_info > (2, 6):
+	REQUIRED = ["PyMySQL", ]
 
 setup(
 	name = "archivedb",
@@ -15,4 +20,5 @@ setup(
 	license = "MIT",
 	packages = ['archivedb', 'archivedb.plugins'],
 	scripts = ["./bin/archivedb"],
+	install_requires = REQUIRED,
 )
