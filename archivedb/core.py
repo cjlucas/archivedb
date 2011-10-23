@@ -76,7 +76,7 @@ def clean():
         sql = """SELECT id, watch_dir, path, filename LIMIT {0}, {1}""".format(
                                                                     row_offset,
                                                                     ROW_COUNT)
-        log.debug("executing: {0}".format())
+        log.debug("executing: {0}".format(sql))
         rows = db._query(sql)
         for r in rows:
             full_path = os.path.join(*r[1:])
