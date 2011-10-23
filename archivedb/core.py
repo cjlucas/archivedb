@@ -62,9 +62,9 @@ def clean():
 
     # remove all rows where watch_dir = '' 
     # (this would occur when a watch_dir has been removed from the enum list)
-    query = "DELETE FROM `archive` WHERE watch_dir = ''"
-    log.debug("executing: \"{0}\"".format(query))
-    rows = db._execute(query)
+    sql = "DELETE FROM `archive` WHERE watch_dir = ''"
+    log.debug("executing: \"{0}\"".format(sql))
+    rows = db._execute(sql)
     log.debug("{0} rows removed from last query.".format(rows))
     rows_cleaned += rows
 
@@ -76,7 +76,7 @@ def clean():
         sql = """SELECT id, watch_dir, path, filename 
         FROM `archive` LIMIT {0}, {1}""".format(row_offset, ROW_COUNT)
 
-        log.debug("executing: {0}".format(sql))
+        log.debug("executing: \"{0}\"".format(sql))
         rows = db._query(sql)
         for r in rows:
             full_path = os.path.join(*r[1:])
@@ -85,8 +85,8 @@ def clean():
                 #db.delete_file(r[0])
                 rows_cleaned += 1
 
-            if len(rows) < ROW_COUNT: break
-            else: row_offset += len(rows)
+        if len(rows) < ROW_COUNT: break
+        else: row_offset += len(rows)
 
 
     log.info("total rows cleaned: {0}".format(rows_cleaned))
