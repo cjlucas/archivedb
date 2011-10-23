@@ -73,9 +73,9 @@ def clean():
     row_offset = 0
     log.info("purging nonexistent files in the database (may take awhile)")
     while True:
-        sql = """SELECT id, watch_dir, path, filename LIMIT {0}, {1}""".format(
-                                                                    row_offset,
-                                                                    ROW_COUNT)
+        sql = """SELECT id, watch_dir, path, filename 
+        FROM `archive` LIMIT {0}, {1}""".format(row_offset, ROW_COUNT)
+
         log.debug("executing: {0}".format(sql))
         rows = db._query(sql)
         for r in rows:
