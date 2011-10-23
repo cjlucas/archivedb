@@ -6,5 +6,15 @@ sys.path.append(os.getcwd())
 
 import archivedb.core
 
+def print_help():
+    print("Usage: {0} <start|clean>".format(sys.argv[0]))
+
 if __name__ == '__main__':
-	archivedb.core.main()
+    valid_cmds = ("start", "clean")
+
+    cmd = sys.argv[-1].lower()
+    if cmd in valid_cmds:
+        if cmd == "start": archivedb.core.main()
+        elif cmd == "clean": archivedb.core.clean()
+    else:
+        print_help()
