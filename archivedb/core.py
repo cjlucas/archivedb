@@ -81,8 +81,8 @@ def clean():
         for r in rows:
             full_path = os.path.join(*r[1:])
             if not os.path.exists(full_path):
-                log.info("Deleting: {0}".format(full_path))
-                #db.delete_file(r[0])
+                log.debug("Deleting: {0}".format(full_path))
+                db.delete_file(r[0])
                 rows_cleaned += 1
 
         if len(rows) < ROW_COUNT: break
