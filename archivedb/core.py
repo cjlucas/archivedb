@@ -105,4 +105,3 @@ def main():
 if __name__ == 'archivedb.core':
     args = config.args
     log = logging.getLogger(__name__)
-    main()
