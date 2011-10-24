@@ -72,6 +72,7 @@ def clean():
     ROW_COUNT = 500
     row_offset = 0
     log.info("purging nonexistent files in the database (may take awhile)")
+
     while True:
         sql = """SELECT id, watch_dir, path, filename 
         FROM `archive` LIMIT {0}, {1}""".format(row_offset, ROW_COUNT)
@@ -85,7 +86,11 @@ def clean():
                 db.delete_file(r[0])
                 rows_cleaned += 1
 
+        # if the number of rows received from the query is equal to ROW_COUNT,
+        # that means there's probably more rows left to check. But if it's
+        # less than ROW_COUNT, that means we've reached the end of the database
         if len(rows) < ROW_COUNT: break
+        # update the offset
         else: row_offset += len(rows)
 
 
