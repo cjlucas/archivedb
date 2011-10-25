@@ -93,14 +93,14 @@ def delete_file(db, full_path):
         log.debug("file '{0}' not found in database".format(full_path))
         return
 
-def scan_dir(db, watch_dir):
-    if not os.path.isdir(watch_dir):
-        log.warning("watch_dir '{0}' does not exist, skipping".format(watch_dir))
+def scan_dir(db, d):
+    if not os.path.isdir(d):
+        log.warning("'{0}' does not exist, skipping".format(d))
         return
     else:
-        log.info("checking watch_dir '{0}'".format(watch_dir))
+        log.info("scanning directory: '{0}'".format(d))
 
-    for root, dirs, files in os.walk(watch_dir):
+    for root, dirs, files in os.walk(d):
         for f in files:
             full_path = os.path.join(root, f)
             if not is_ignored_file(f) and not is_ignored_directory(full_path):
