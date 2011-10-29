@@ -16,7 +16,7 @@ def get_logger(log_path):
     console_formatter = logging.Formatter(CONSOLE_FORMAT, datefmt=DATE_FORMAT)
 
     log = logging.getLogger("archivedb")
-    #log.setLevel(logging.DEBUG)
+    log.setLevel(logging.DEBUG)
 
     # file rotator logging
     rotator = logging.handlers.RotatingFileHandler(
