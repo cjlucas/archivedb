@@ -1,16 +1,20 @@
-import os, sys, logging, logging.handlers
+import os, logging, logging.handlers
 from archivedb.config import args
 
 def get_logger(log_path):
     #LOG_PATH = os.path.join(os.path.expanduser(os.path.split(sys.argv[0])[0]), "logs")
     #LOG_FILE = "archivedb.log"
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
     LOG_FORMAT = "%(asctime)s :: %(levelname)-8s :: %(filename)s:%(lineno)s :: %(funcName)s :: %(message)s"
-    CONSOLE_FORMAT = "%(asctime)s :: %(levelname)-8s :: %(funcName)s :: %(message)s"
+    #CONSOLE_FORMAT = "%(asctime)s :: %(levelname)-8s :: %(funcName)s :: %(message)s"
+    CONSOLE_FORMAT = "%(asctime)s %(levelname)-8s: %(message)s"
+
     if not os.path.isdir(os.path.dirname(log_path)):
         os.mkdir(os.path.dirname(log_path))
 
-    log_formatter = logging.Formatter(LOG_FORMAT)
-    console_formatter = logging.Formatter(CONSOLE_FORMAT)
+    log_formatter = logging.Formatter(LOG_FORMAT, datefmt=DATE_FORMAT)
+    console_formatter = logging.Formatter(CONSOLE_FORMAT, datefmt=DATE_FORMAT)
+
     log = logging.getLogger("archivedb")
     log.setLevel(logging.DEBUG)
 
@@ -21,7 +25,10 @@ def get_logger(log_path):
     )
     console = logging.StreamHandler()
 
-    rotator.setLevel(logging.DEBUG)
+    if args["debug"]: console_level = logging.DEBUG
+    else: console_level = logging.INFO
+
+    rotator.setLevel(console_level)
     rotator.setFormatter(log_formatter)
 
     console.setLevel(logging.INFO)

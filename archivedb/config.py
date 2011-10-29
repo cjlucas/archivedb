@@ -16,7 +16,7 @@ def get_default_params(section):
     Returns: tuple (keys_sorted[section], defaults[section])
     keys_sorted[section] - since dict doesn't preserve order, this is used to keep order when writing
     defaults[section] - dict of default values
-    required_keys[section] - list of keys that require the user to edit
+    required_keys[section] - list of keys that require user modification
     """
 
     defaults = {}
@@ -25,10 +25,11 @@ def get_default_params(section):
 
     defaults["general"] = {
         "watch_dirs"    : "",
-        "ignore_dirs"    : "",
-        "ignore_files"    : ".*\!ut.* ^\.",
-        "scan_interval"    : "12",
-        "log_path"        : "/tmp/archivedb.log"
+        "ignore_dirs"   : "",
+        "ignore_files"  : ".*\!ut.* ^\.",
+        "scan_interval" : "12",
+        "log_path"      :"/tmp/archivedb.log",
+        "debug"         : "false",
     }
     defaults["db"] = {
         "host"    : "localhost",
@@ -38,7 +39,8 @@ def get_default_params(section):
     }
 
     keys_sorted["general"] = [
-        "watch_dirs", "ignore_dirs", "ignore_files", "scan_interval", "log_path",
+        "watch_dirs", "ignore_dirs", "ignore_files", "scan_interval",
+        "log_path", "debug",
     ]
     keys_sorted["db"] = [
         "host", "port", "user", "pass",
@@ -149,11 +151,9 @@ def parse_config(config):
                 continue
 
             # section specific formatting
-            if sec == "db":
-                # add db_ prefix to keys
-                args["db_{0}".format(k)] = v
-            else:
-                args[k] = v
+            # add db_ prefix to keys
+            if sec == "db": args["db_{0}".format(k)] = v
+            else: args[k] = v
 
     return(args)
 
@@ -170,6 +170,7 @@ def format_args(args):
 
     # convert values to int
     cast_int = ["db_port", "scan_interval"]
+    cast_bool = ["debug"]
 
     for k in cast_int:
         if k in args:
@@ -177,6 +178,14 @@ def format_args(args):
                 args[k] = int(args[k])
             except ValueError:
                 log.critical("Given value for key '{0}' is not a valid integer. Check config.".format(k))
+                sys.exit(1)
+
+    for k in cast_bool:
+        if k in args:
+            if args[k].lower() in ["true", "1"]: args[k] = True
+            elif args[k].lower() in ["false", "0"]: args[k] = False
+            else:
+                log.critical("Given value for key '{0}' is not valid. Check config.".format(k))
                 sys.exit(1)
 
     # split values
@@ -204,6 +213,7 @@ if __name__ == 'archivedb.config':
     CONF_FILE = os.path.expanduser("~/.archivedb.conf")
     # create config if none exists
     if not os.path.exists(CONF_FILE):
+        #TODO: figure out why python2 cant create a config file
         #log.info("conf file not found, creating one at {0}".format(CONF_FILE))
         #create_default_config(CONF_FILE)
         log.critical("{0} not found, edit example.conf and copy.".format(CONF_FILE))
