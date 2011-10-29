@@ -16,25 +16,25 @@ def get_logger(log_path):
     console_formatter = logging.Formatter(CONSOLE_FORMAT, datefmt=DATE_FORMAT)
 
     log = logging.getLogger("archivedb")
-    log.setLevel(logging.DEBUG)
+    #log.setLevel(logging.DEBUG)
 
+    # file rotator logging
     rotator = logging.handlers.RotatingFileHandler(
         filename=log_path,
         maxBytes=20000000,
         backupCount=5,
     )
-    console = logging.StreamHandler()
+    rotator.setLevel(logging.DEBUG)
+    rotator.setFormatter(log_formatter)
+    log.addHandler(rotator)
 
+    # console logging
+    console = logging.StreamHandler()
     if args["debug"]: console_level = logging.DEBUG
     else: console_level = logging.INFO
 
-    rotator.setLevel(console_level)
-    rotator.setFormatter(log_formatter)
-
-    console.setLevel(logging.INFO)
+    console.setLevel(console_level)
     console.setFormatter(console_formatter)
-
-    log.addHandler(rotator)
     log.addHandler(console)
 
     return(log)
