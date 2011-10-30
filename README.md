@@ -10,17 +10,17 @@ functionality of this backend with movie info from IMDb, and tv info from TVRage
 
 REQUIREMENTS
 ------------
-- Linux
-  - support may come later for other OSes
+- OS
+  - Linux: full support
+  - OS X: no support for real time file system monitoring, only minor testing
+  - Windows: untested
 
-- Python
-  - 2.7 or higher
-  - 3.2 or higher
+- [Python](http://www.python.org/) 2.7+ or 3.2+ (may work on older versions, but these are what I'm testing against)
 
-- MySQL
-  - 4.1 or higher
+- [MySQL](http://www.mysql.com/) 4.1+
 
-- [PyMySQL](http://www.pymysql.org/) 
+- [PyMySQL](http://www.pymysql.org/)
+- [python-progressbar](http://code.google.com/p/python-progressbar/) (optional)
 
 
 INSTALL INSTRUCTIONS
@@ -31,9 +31,6 @@ INSTALL INSTRUCTIONS
 
 TODO
 ----
-- core
-  - implement daemon code
-  - add various command line options
-- plugins
-  - IMDb and TVRage support
+- plugin support
+  - A few ideas: IMDb, TVRage, Ebook 
 - bug fixing
