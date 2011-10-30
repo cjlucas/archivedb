@@ -1,8 +1,9 @@
 import os, re, hashlib
 try:
     from progressbar import ProgressBar, Bar, ETA
+    pbar_enabled = True
 except ImportError:
-    ProgressBar = Bar = ETA = None
+    pbar_enabled = False
 
 def md5sum(f, block_size=2 ** 20):
     md5 = hashlib.md5()
@@ -10,11 +11,13 @@ def md5sum(f, block_size=2 ** 20):
     if not os.path.isfile(f):
         return(None)
 
-    if ProgressBar is not None:
+    file_size = os.stat(f).st_size
+
+    if pbar_enabled and file_size > 0:
         widgets = [Bar(left="[", right="]", marker="="), ' ', ETA()]
         # set maxval to the total size of the file, this is 
         # so progressbar can calc the eta/percentage completed of hash check
-        bar = ProgressBar(widgets=widgets, maxval=os.stat(f).st_size).start()
+        bar = ProgressBar(widgets=widgets, maxval=file_size).start()
     else: bar = None
 
     try:
