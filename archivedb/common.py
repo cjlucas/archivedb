@@ -1,14 +1,25 @@
 import os, re, hashlib
+try:
+    from progressbar import ProgressBar, Bar, ETA
+except ImportError:
+    ProgressBar = Bar = ETA = None
 
 def md5sum(f, block_size=2 ** 20):
     md5 = hashlib.md5()
-
     # check if file was moved/deleted before opening
     if not os.path.isfile(f):
         return(None)
 
+    if ProgressBar is not None:
+        widgets = [Bar(left="[", right="]", marker="="), ' ', ETA()]
+        # set maxval to the total size of the file, this is 
+        # so progressbar can calc the eta/percentage completed of hash check
+        bar = ProgressBar(widgets=widgets, maxval=os.stat(f).st_size).start()
+    else: bar = None
+
     try:
         with open(f, "rb") as fp:
+            bytes_read = 0
             while True:
                 # check if file has moved/deleted during md5 creation
                 if not os.path.isfile(f):
@@ -17,10 +28,15 @@ def md5sum(f, block_size=2 ** 20):
                 if not data:
                     break
                 md5.update(data)
+                bytes_read += len(data)
+
+                if bar is not None: bar.update(bytes_read)
+
     except IOError:
         # another failsafe in case open() throws error
         return(None)
 
+    if bar is not None: bar.finish()
     return(md5.hexdigest())
 
 
