@@ -103,14 +103,13 @@ class DatabaseConnection:
 
         query = """UPDATE `{0}` SET `md5` = '{1}', `mtime`= '{2}'
                 WHERE watch_dir = '{3}' and path = '{4}'
-                and filename = '{5}' and size = '{6}'""".format(
+                and filename = '{5}'""".format(
                     self.table_name,
                     md5,
                     mtime,
                     watch_dir,
                     path,
                     filename,
-                    size,
                 )
         log.debug(query)
         rows_changed = self.c.execute(query)
