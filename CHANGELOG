@@ -1,3 +1,10 @@
+v0.2.0 (October 29, 2011)
+-------------------------
+- Added: a new function, "clean"; cleans the database of files from directories 
+  that aren't being watched anymore, and files that don't exist anymore.
+- Added: progress bar support during md5 creation
+- Added: optional debug logging to console
+
 v0.1.0 (September 7, 2011)
 ---------------------------
 - Initial Release
