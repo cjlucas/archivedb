@@ -1,11 +1,10 @@
-import os, sys, re, time, logging
+import os, time, logging
 
 import archivedb.logger
 import archivedb.config as config
 import archivedb.threads
 import archivedb.sql
 import archivedb.monitor
-from archivedb.common import split_path, join_path
 
 def _database_check():
     """ Perform preliminary database checks

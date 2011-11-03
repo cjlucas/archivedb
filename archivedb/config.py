@@ -3,9 +3,9 @@ import archivedb.common
 
 # The ConfigParser module has been renamed to configparser in Python 3.0
 if sys.version_info.major < 3:
-    import ConfigParser as configparser
+    import ConfigParser as configparser #@UnresolvedImport @UnusedImport
 else:
-    import configparser
+    import configparser #@Reimport
 
 
 def get_default_params(section):

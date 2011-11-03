@@ -1,6 +1,10 @@
-import os, sys, pymysql, logging
+import os
+import sys
+import re
+import pymysql
+import logging
 import archivedb.config as config
-from archivedb.common import enum_to_list, list_to_enum, md5sum, escape_quotes
+from archivedb.common import enum_to_list, list_to_enum, escape_quotes
 
 class DatabaseConnection:
     def __init__(self, host, user, passwd, database, port, table_name):
@@ -155,7 +159,8 @@ class DatabaseConnection:
         src_path = src[1]
         dest_path = dest[1]
 
-        query = "SELECT `id`,`path` FROM `archive` WHERE `path` REGEXP '{0}(\/|$)'".format(src_path)
+        query = """SELECT `id`,`path` FROM `archive` WHERE `path` 
+                REGEXP '{0}(\/|$)'""".format(re.escape(src_path))
         self.c.execute(query)
         log.debug(query)
         rows_changed = 0
