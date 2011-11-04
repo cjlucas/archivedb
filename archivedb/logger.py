@@ -66,14 +66,14 @@ def log_traceback(exc_info, header=None):
                               exc_info[2],
                               file=s
                               )
+
+    s.write("*** There has been an error, please contact the developer\n")
+    s.write("*** Contact Info: {0}\n".format(__author__))
+    s.write("*** Please attach log file(s) (they can be found here: {0})\n".format(
+                                                                    args["log_path"]))
     s.seek(0)
     log.critical(s.read())
     s.close()
-
-    log.critical("""There has been an error, please contact the developer.
-Contact Info: {0}
-Please attach log file(s), they can be found here: {1}""".format(__author__,
-                                                                 args["log_path"]))
 
 if __name__ == "archivedb.logger":
     # create log file
