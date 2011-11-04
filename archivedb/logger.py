@@ -60,14 +60,16 @@ def log_traceback(exc_info, header=None):
     if header is not None:
         s.write(header + '\n')
 
+    s.write("*** There has been an error, please contact the developer\n\n")
+
     traceback.print_exception(
                               exc_info[0],
                               exc_info[1],
                               exc_info[2],
                               file=s
                               )
-
-    s.write("*** There has been an error, please contact the developer\n")
+    s.write("\n")
+    s.write("*** Copy this message in the email.")
     s.write("*** Contact Info: {0}\n".format(__author__))
     s.write("*** Please attach log file(s) (they can be found here: {0})\n".format(
                                                                     args["log_path"]))
