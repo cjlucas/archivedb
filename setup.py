@@ -1,7 +1,7 @@
 from setuptools import setup
 import sys
 
-version = __import__('archivedb').version
+version = __import__('archivedb').__version__
 
 if sys.version_info > (3, 0):
 	REQUIRED = ["PyMySQL3", ]

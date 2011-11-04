@@ -22,5 +22,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 """
-
-version = "0.2.0"
+__author__ = "Chris Lucas <cjlucas07@gmail.com>"
+__version__ = "0.2.0"
