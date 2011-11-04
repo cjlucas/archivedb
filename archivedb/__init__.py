@@ -23,4 +23,4 @@ THE SOFTWARE.
 
 """
 __author__ = "Chris Lucas <cjlucas07@gmail.com>"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
