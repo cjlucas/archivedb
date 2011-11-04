@@ -63,6 +63,7 @@ def add_file(db, full_path):
     data = db.get_fields(watch_dir, path, filename, ["mtime", "size"])
 
     if not data: # file is new
+        log.info("creating md5 checksum for {0}".format(full_path))
         md5 = md5sum(full_path)
         # md5sum returns None if file was moved/deleted
         if md5:
@@ -292,7 +293,7 @@ def run_inotify():
 
     log.info("initializing inotify monitoring")
     for watch_dir in args["watch_dirs"]:
-        log.info("adding '{0}'".format(watch_dir))
+        log.info("now monitoring '{0}'".format(watch_dir))
         wm.add_watch(watch_dir, masks, rec=True, auto_add=True)
 
     log.info("starting inotify monitoring")
