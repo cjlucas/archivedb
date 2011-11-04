@@ -14,7 +14,7 @@ def md5sum(f, block_size=2 ** 20):
     file_size = os.stat(f).st_size
 
     if pbar_enabled and file_size > 0:
-        widgets = [Bar(left="[", right="]", marker="="), ' ', ETA()]
+        widgets = [Bar(left="[", right="]", marker="#"), ' ', ETA()]
         # set maxval to the total size of the file, this is 
         # so progressbar can calc the eta/percentage completed of hash check
         bar = ProgressBar(widgets=widgets, maxval=file_size).start()
