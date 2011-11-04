@@ -66,20 +66,24 @@ def add_file(db, full_path):
         md5 = md5sum(full_path)
         # md5sum returns None if file was moved/deleted
         if md5:
+            log.info("inserting {0} into the database.".format(full_path))
             db.insert_file(watch_dir, path, filename, md5, mtime, size)
         else:
             log.warn("file '{0}' was moved/deleted during md5sum creation. not being added to database".format(full_path))
     else:
         old_mtime = data[0][0]
         old_size = data[0][1]
-        #log.debug("old_mtime = {0}".format(old_mtime))
-        #log.debug("mtime = {0}".format(mtime))
-        #log.debug("old_size = {0}".format(old_size))
-        #log.debug("size = {0}".format(size))
         # check if it has changed
         if int(old_mtime) != int(mtime) or int(old_size) != int(size):
+            log.debug("old_mtime = {0}".format(old_mtime))
+            log.debug("mtime = {0}".format(mtime))
+            log.debug("old_size = {0}".format(old_size))
+            log.debug("size = {0}".format(size))
+            log.info("creating md5 checksum for {0}".format(full_path))
+
             md5 = md5sum(full_path)
             if md5:
+                log.info("updating {0} in the database.".format(full_path))
                 rows_changed = db.update_file(watch_dir, path, filename, md5, mtime, size)
                 log.debug("rows_changed = {0}".format(rows_changed))
             else:
@@ -94,10 +98,10 @@ def delete_file(db, full_path):
 
     if data:
         id = data[0][0]
+        log.info("removing {0} from the database".format(full_path))
         db.delete_file(id)
     else:
         log.debug("file '{0}' not found in database".format(full_path))
-        return
 
 def scan_dir(db, d):
     if not os.path.isdir(d):
@@ -155,7 +159,8 @@ class InotifyHandler(ProcessEvent):
             When moving a file within the given watch directories, it is
             assumed that immediately after the IN_MOVED_FROM event,
             an IN_MOVED_TO event follows. So if there is no IN_MOVED_TO
-            event, it's assumed that the file was moved outside of the watch directories
+            event, it's assumed that the file was moved outside 
+            of the watch directories
             
             process_IN_MOVED_FROM sets self.last_moved_from to the latest
             moved file
@@ -252,8 +257,12 @@ class InotifyHandler(ProcessEvent):
                 log.debug("dest_split_path    = {0}".format(dest_split_path))
 
                 if event.dir:
+                    log.info("directory '{0}' has been moved to '{1}', updating.".format(src_full_path,
+                                                                                         dest_full_path))
                     rows_changed = self.db.move_directory(src_split_path, dest_split_path)
                 else:
+                    log.info("{0} has been moved to {1}, updating.".format(src_full_path,
+                                                                           dest_full_path))
                     rows_changed = self.db.move_file(src_split_path, dest_split_path)
 
                 log.debug("rows_changed = {0}".format(rows_changed))

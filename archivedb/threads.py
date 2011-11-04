@@ -44,4 +44,3 @@ def keep_child_processes_alive(threads_dict):
 
 if __name__ == 'archivedb.threads':
     log = logging.getLogger(__name__)
-    log.info("archivedb.threads imported")

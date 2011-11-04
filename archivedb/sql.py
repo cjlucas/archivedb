@@ -239,4 +239,3 @@ class DatabaseConnection:
 
 if __name__ == 'archivedb.sql':
     log = logging.getLogger(__name__)
-    log.info("{0} imported".format(__name__))
