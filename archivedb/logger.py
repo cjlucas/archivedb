@@ -1,4 +1,13 @@
-import os, logging, logging.handlers
+import os
+import sys
+import logging, logging.handlers
+import traceback
+
+if sys.version_info.major < 3:
+    from StringIO import StringIO
+else:
+    from io import StringIO
+
 from archivedb.config import args
 
 def get_logger(log_path):
@@ -38,6 +47,29 @@ def get_logger(log_path):
     log.addHandler(console)
 
     return(log)
+
+def log_traceback(exc_info, header=None):
+    """log traceback
+    Args
+    exc_info: tuple returned by sys.exc_info()
+    header: info to be logged before the exception
+    """
+
+    s = StringIO()
+    if header is not None:
+        s.write(header + '\n')
+
+    traceback.print_exception(
+                              exc_info[0],
+                              exc_info[1],
+                              exc_info[2],
+                              file=s
+                              )
+    s.seek(0)
+
+    log.critical(s.read())
+
+    s.close()
 
 if __name__ == "archivedb.logger":
     # create log file

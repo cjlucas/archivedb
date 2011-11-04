@@ -1,7 +1,13 @@
-import os, sys, logging, re, time
+import os
+import sys
+import logging
+import re
+import time
+
 import archivedb.config as config
 import archivedb.sql as sql
 from archivedb.common import md5sum, split_path, escape_quotes
+from archivedb.logger import log_traceback
 
 log = logging.getLogger(__name__)
 args = config.args
@@ -117,8 +123,13 @@ def run_oswalk():
                                     args["db_port"],
                                     "archive",
                                     )
-        for watch_dir in args["watch_dirs"]:
-            scan_dir(db, watch_dir)
+
+        try:
+            for watch_dir in args["watch_dirs"]:
+                scan_dir(db, watch_dir)
+        except:
+            # catch-all, log any exceptions raised and continue
+            log_traceback(sys.exc_info(), "Exception raised in run_oswalk():")
 
         log.info("oswalk thread: sleeping")
         time.sleep(args["scan_interval"]*3600)
@@ -276,8 +287,9 @@ def run_inotify():
         wm.add_watch(watch_dir, masks, rec=True, auto_add=True)
 
     log.info("starting inotify monitoring")
-    notifier.loop()
 
-
-if __name__ == 'archivedb.monitor':
-    log.info("{0} imported".format(__name__))
+    try:
+        notifier.loop()
+    except:
+        # catch-all, log any exceptions raised and continue
+        log_traceback(sys.exc_info(), "Exception raised in run_inotify():")
