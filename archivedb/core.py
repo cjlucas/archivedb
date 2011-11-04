@@ -50,7 +50,17 @@ def _database_check():
         log.debug("watch_dirs in conf don't match to watch_dirs in database, need to update enum")
         log.debug("conf_watch_dirs    = {0}".format(conf_watch_dirs))
         log.debug("db_watch_dirs    = {0}".format(db_watch_dirs))
-        db.alter_enum("watch_dir", args["watch_dirs"])
+
+        print("\nATTENTION: Watch directories have been changed:")
+        print("Old watch dirs: {0}".format(db_watch_dirs))
+        print("New watch dirs: {0}".format(conf_watch_dirs))
+        print("If any watch directories have been removed, ",
+              "they will be removed permanently from the database.")
+
+        if input("Update? ").lower() in ('y', 'yes'):
+            db.alter_enum("watch_dir", args["watch_dirs"])
+        else:
+            print("OK, will not update watch directories in the database.")
 
     return(db)
 
