@@ -2,6 +2,7 @@ import os
 import sys
 import logging, logging.handlers
 import traceback
+from archivedb import __author__
 
 if sys.version_info.major < 3:
     from StringIO import StringIO
@@ -66,10 +67,13 @@ def log_traceback(exc_info, header=None):
                               file=s
                               )
     s.seek(0)
-
     log.critical(s.read())
-
     s.close()
+
+    log.critical("""There has been an error, please contact the developer.
+Contact Info: {0}
+Please attach log file(s), they can be found here: {1}""".format(__author__,
+                                                                 args["log_path"]))
 
 if __name__ == "archivedb.logger":
     # create log file
