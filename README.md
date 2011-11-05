@@ -33,4 +33,5 @@ TODO
 ----
 - plugin support
   - A few ideas: IMDb, TVRage, Ebook 
-- bug fixing
+- API support
+- automatic database backup
