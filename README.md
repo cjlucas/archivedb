@@ -15,7 +15,7 @@ REQUIREMENTS
   - OS X: no support for real time file system monitoring, only minor testing
   - Windows: untested
 
-- [Python](http://www.python.org/) 2.7+ or 3.2+ (may work on older versions, but these are what I'm testing against)
+- [Python](http://www.python.org/) 2.6+ or 3.2+ (may work on older versions, but these are what I'm testing against)
 
 - [MySQL](http://www.mysql.com/) 4.1+
 
