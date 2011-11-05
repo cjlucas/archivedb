@@ -63,7 +63,7 @@ def add_file(db, full_path):
     data = db.get_fields(watch_dir, path, filename, ["mtime", "size"])
 
     if not data: # file is new
-        log.info("creating md5 checksum for {0} ...".format(filename))
+        log.info("generating checksum for {0} ...".format(filename))
         md5 = md5sum(full_path)
         # md5sum returns None if file was moved/deleted
         if md5:
@@ -80,7 +80,7 @@ def add_file(db, full_path):
             log.debug("mtime = {0}".format(mtime))
             log.debug("old_size = {0}".format(old_size))
             log.debug("size = {0}".format(size))
-            log.info("creating md5 checksum for {0} ...".format(filename))
+            log.info("generating checksum for {0} ...".format(filename))
 
             md5 = md5sum(full_path)
             if md5:
