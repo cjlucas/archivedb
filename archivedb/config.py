@@ -101,6 +101,7 @@ def validate_config(conf_file):
 
         # check if items exist in conf file, if not, add defaults
         # if item is required, print error and halt the program
+        # (this dict comprehension syntax is for py2.6 support)
         conf_dict = dict((pair[0], pair[1]) for pair in config.items(sec))
         log.debug("conf_dict = {0}".format(str(conf_dict)))
 

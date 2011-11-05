@@ -99,14 +99,14 @@ def delete_file(db, full_path):
 
     if data:
         id = data[0][0]
-        log.info("removing {0} from the database".format(filename))
+        log.info("removing {0} from the database.".format(filename))
         db.delete_file(id)
     else:
-        log.debug("file '{0}' not found in database".format(full_path))
+        log.debug("file '{0}' not found in database.".format(full_path))
 
 def scan_dir(db, d):
     if not os.path.isdir(d):
-        log.warning("'{0}' does not exist, skipping".format(d))
+        log.warning("'{0}' does not exist, skipping.".format(d))
         return
     else:
         log.info("scanning directory: '{0}'".format(d))

@@ -69,7 +69,7 @@ def log_traceback(exc_info, header=None):
                               file=s
                               )
     s.write("\n")
-    s.write("*** Copy this message in the email.")
+    s.write("*** Copy this message in the email.\n")
     s.write("*** Contact Info: {0}\n".format(__author__))
     s.write("*** Please attach log file(s) (they can be found here: {0})\n".format(
                                                                     args["log_path"]))
