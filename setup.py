@@ -1,5 +1,6 @@
 from setuptools import setup
 import sys
+import platform
 
 version = __import__('archivedb').__version__
 
@@ -7,6 +8,10 @@ if sys.version_info > (3, 0):
 	REQUIRED = ["PyMySQL3", ]
 elif sys.version_info > (2, 6):
 	REQUIRED = ["PyMySQL", ]
+
+# pyinotify support (linux only)
+if platform.system() == 'Linux':
+	REQUIRED.append("pyinotify")
 
 REQUIRED.append("progressbar")
 
