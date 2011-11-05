@@ -1,3 +1,15 @@
+v0.2.1 (November 5, 2011)
+-------------------------
+- Added:
+  - Python 2.6 support
+  - Require user confirmation when updating watch directories
+  - Logging for fatal errors (incl traceback)
+  - Better logging at the INFO level, for those that don't want to enable
+    debugging, but still want to know what's going on
+- Bug fixes:
+  - divide by zero error (Issue #3)
+  - bug which caused files not to be updated in the database (Issue #2)
+
 v0.2.0 (October 29, 2011)
 -------------------------
 - Added: a new function, "clean"; cleans the database of files from directories 
