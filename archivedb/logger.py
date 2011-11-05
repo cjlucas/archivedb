@@ -4,7 +4,7 @@ import logging, logging.handlers
 import traceback
 from archivedb import __author__
 
-if sys.version_info.major < 3:
+if sys.version_info[0] < 3:
     from StringIO import StringIO
 else:
     from io import StringIO

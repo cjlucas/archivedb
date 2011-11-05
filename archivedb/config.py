@@ -2,7 +2,7 @@ import os, sys, logging
 import archivedb.common
 
 # The ConfigParser module has been renamed to configparser in Python 3.0
-if sys.version_info.major < 3:
+if sys.version_info[0] < 3:
     import ConfigParser as configparser #@UnresolvedImport @UnusedImport
 else:
     import configparser #@Reimport
