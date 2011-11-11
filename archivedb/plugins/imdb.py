@@ -3,15 +3,19 @@ import re
 class TitleParser:
     year_re = r"(19\d{2}|20[01]\d)"
 
-    sources = ("HDDVD(Rip)?", "BluRay(Rip)?", "HDTV(Rip)?", "DVD", \
+    sources = ("HD\-?DVD(Rip)?", "Blu\-?Ray(Rip)?", "HDTV(Rip)?", "DVD",
                "NTSC", "PAL", "R[1-5]")
-    vcodecs = ("x264", "XviD", "DIVX")
-    acodecs = ("DTS\d?", "AC3\d?", "DD\d?", "FLAC\d?")
+    vcodecs = ("x264", "XviD", "DIVX", "AVC(.?HD)?", "VC.?1", "H.?264")
+    acodecs = ("DTS\d?", "DTS.?HD\d?", "TrueHD\d?", "AC3\d?",
+                "DD\d?", "FLAC\d?", "AAC\d?")
     resolutions = ("1080[pi]", "720[pi]", "480[pi]")
-    misc = ("iNTERNAL", "COMPLETE", "Extras", "Criterion", \
-            "(UN)?RATED", "[2-4]in1", "S?CE")
+    extensions = ("avi", "mkv", "mov", "mp4", "ogm")
+    languages = ("(TRUE)?FRENCH", "GERMAN", "SPANISH", "CHINESE")
+    misc = ("iNTERNAL", "COMPLETE", "Extras", "Criterion",
+            "(UN)?RATED", "[2-4]in1", "[SCE]{2,3}")
 
-    keywords = sources + vcodecs + acodecs + resolutions + misc
+    keywords = sources + vcodecs + acodecs + resolutions + \
+                languages + extensions + misc
 
     def __init__(self, s):
         self.s = s
@@ -38,11 +42,11 @@ class TitleParser:
                                         __class__.keywords + (str(self.year),))
         else: keywords_re = "|".join(__class__.keywords + (__class__.year_re,))
 
-        keywords_re = r"[^a-z](" + keywords_re + r")[^a-z]"
+        keywords_re = r"[^a-z](" + keywords_re + r")([^a-z]|$)"
 
         #print(keywords_re)
 
-        name_split = re.split(keywords_re, self.s)
+        name_split = re.split(keywords_re, self.s, re.I)
         if len(name_split) > 0: self.title = name_split[0].strip()
         else: self.title = None
 
