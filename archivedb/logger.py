@@ -5,9 +5,9 @@ import traceback
 from archivedb import __author__
 
 if sys.version_info[0] < 3:
-    from StringIO import StringIO
+    from StringIO import StringIO #@UnusedImport #@UnresolvedImport
 else:
-    from io import StringIO
+    from io import StringIO #@UnusedImport #@UnresolvedImport
 
 from archivedb.config import args
 
