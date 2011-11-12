@@ -3,16 +3,16 @@ import re
 class TitleParser:
     year_re = r"(19\d{2}|20[01]\d)"
 
-    sources = ("HD\-?DVD(Rip)?", "Blu\-?Ray(Rip)?", "HDTV(Rip)?", "DVD",
-               "NTSC", "PAL", "R[1-5]")
+    sources = ("HD.?DVD(Rip)?", "Blu.?Ray(Rip)?", "[SH]DTV(Rip)?", "DVD(Rip)?",
+               "BD(Rip)?", "VCD(Rip)?", "NTSC", "PAL", "R[1-5]")
     vcodecs = ("x264", "XviD", "DIVX", "AVC(.?HD)?", "VC.?1", "H.?264")
     acodecs = ("DTS\d?", "DTS.?HD\d?", "TrueHD\d?", "AC3\d?",
                 "DD\d?", "FLAC\d?", "AAC\d?")
-    resolutions = ("1080[pi]", "720[pi]", "480[pi]")
+    resolutions = ("(1080|720|480)[pi]",)
     extensions = ("avi", "mkv", "mov", "mp4", "ogm")
     languages = ("(TRUE)?FRENCH", "GERMAN", "SPANISH", "CHINESE")
     misc = ("iNTERNAL", "COMPLETE", "Extras", "Criterion",
-            "(UN)?RATED", "[2-4]in1", "[SCE]{2,3}")
+            "(UN)?RATED", "[2-4]in1", "[SCE]{2,3}", "MULTI")
 
     keywords = sources + vcodecs + acodecs + resolutions + \
                 languages + extensions + misc
