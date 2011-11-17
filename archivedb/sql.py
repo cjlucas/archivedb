@@ -156,7 +156,7 @@ class DatabaseConnection:
     def delete_directory(self, d):
         self.check_connection()
         d = d.rstrip(os.sep) + os.sep # append os.sep so split_path knows its a dir
-        watch_dir, path = split_path(config["watch_dirs"], d)[0:2]
+        watch_dir, path = split_path(config.args["watch_dirs"], d)[0:2]
 
         query = """DELETE FROM `archive` WHERE `watch_dir` = '{0}' AND
                 `path` = '{1}'""".format(watch_dir, path)
