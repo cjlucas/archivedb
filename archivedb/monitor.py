@@ -190,7 +190,7 @@ class InotifyHandler(ProcessEvent):
 
         if del_last_moved:
             log.debug("it is assumed file was moved outside watch_dirs, deleting.")
-            if event.dir: self.db.delete_directory(self.last_moved)
+            if event.dir: self.db.delete_directory(self.last_moved.pathname)
             else: delete_file(self.db, self.last_moved)
             self.last_moved = None
 
@@ -208,8 +208,8 @@ class InotifyHandler(ProcessEvent):
         log.debug(event)
         self.check_last_moved(event)
 
-        if not event.dir:
-            delete_file(self.db, event.pathname)
+        if event.dir: self.db.delete_directory(event.pathname)
+        else: delete_file(self.db, event.pathname)
 
     def process_IN_MOVED_FROM(self, event):
         """
