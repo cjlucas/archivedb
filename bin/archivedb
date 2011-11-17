@@ -2,7 +2,7 @@
 import os, sys
 
 # testing only
-sys.path.append(os.getcwd())
+sys.path.insert(0, os.getcwd())
 
 import archivedb.core
 
