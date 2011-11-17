@@ -158,8 +158,9 @@ class DatabaseConnection:
         d = d.rstrip(os.sep) + os.sep # append os.sep so split_path knows its a dir
         watch_dir, path = split_path(config.args["watch_dirs"], d)[0:2]
 
+        # the REGEXP will delete all sub directories as well
         query = """DELETE FROM `archive` WHERE `watch_dir` = '{0}' AND
-                `path` REGEXP '{1}(\/|$)""".format(watch_dir, path)
+                `path` REGEXP '{1}(\/|$)'""".format(watch_dir, path)
 
         log.debug(query)
         rows_changed = self.c.execute(query)
