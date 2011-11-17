@@ -150,9 +150,9 @@ class InotifyHandler(ProcessEvent):
                 args["db_port"],
                 "archive",
         )
-        self.last_moved_from = ""
+        self.last_moved = None
 
-    def check_last_moved_from(self, event):
+    def check_last_moved(self, event):
         """
             This is my solution for recognizing when files are moved
             outside of the given watch directories which should be deleted:
@@ -163,44 +163,40 @@ class InotifyHandler(ProcessEvent):
             event, it's assumed that the file was moved outside 
             of the watch directories
             
-            process_IN_MOVED_FROM sets self.last_moved_from to the latest
+            process_IN_MOVED_FROM sets self.last_moved to the latest
             moved file
             
-            This function will check event.src_pathname with self.last_moved_from,
+            This function will check event.src_pathname with self.last_moved,
             if they're equal, then the file is moved within the watch_dirs
             
             This function should be called at the top of ALL process_* functions
             
         """
-        delfile = False
-        # if var is "", just skip
-        if self.last_moved_from:
-            log.debug("self.last_moved_from = {0}".format(self.last_moved_from))
+        del_last_moved = False
+        # if var is None, just skip
+        if self.last_moved:
+            log.debug("self.last_moved = {0}".format(self.last_moved))
             if event.maskname == "IN_MOVED_TO":
                 # check if IN_MOVED_TO contains src_pathname attribute
                 # (damn them for not just setting src_pathname to None)
-                try:
-                    event.src_pathname
-                except:
-                    delfile = True
-                if event.src_pathname == self.last_moved_from:
-                    self.last_moved_from = ""
-                    return
-                else:
-                    delfile = True
-            else:
-                # if any event triggers and last_moved_from is not "", then
-                # assume IN_MOVED_TO was never triggered for that file and delete it
-                delfile = True
+                if not hasattr(event, "src_pathname"): del_last_moved = True
 
-        if delfile:
+                if event.src_pathname == self.last_moved: self.last_moved = None
+                else: del_last_moved = True
+            else:
+                # if any event triggers and last_moved is not None, then
+                # assume IN_MOVED_TO was never triggered for that file and delete it
+                del_last_moved = True
+
+        if del_last_moved:
             log.debug("it is assumed file was moved outside watch_dirs, deleting.")
-            delete_file(self.db, self.last_moved_from)
-            self.last_moved_from = ""
+            if event.dir: self.db.delete_directory(self.last_moved)
+            else: delete_file(self.db, self.last_moved)
+            self.last_moved = None
 
     def process_IN_CLOSE_WRITE(self, event):
         log.debug(event)
-        self.check_last_moved_from(event)
+        self.check_last_moved(event)
 
         full_path = event.pathname
         f = event.name
@@ -210,7 +206,7 @@ class InotifyHandler(ProcessEvent):
 
     def process_IN_DELETE(self, event):
         log.debug(event)
-        self.check_last_moved_from(event)
+        self.check_last_moved(event)
 
         if not event.dir:
             delete_file(self.db, event.pathname)
@@ -221,9 +217,9 @@ class InotifyHandler(ProcessEvent):
             the program's watch_dirs
         """
         log.debug(event)
-        self.check_last_moved_from(event)
+        self.check_last_moved(event)
 
-        self.last_moved_from = event.pathname
+        self.last_moved = event
 
     def process_IN_MOVED_TO(self, event):
         """
@@ -234,7 +230,7 @@ class InotifyHandler(ProcessEvent):
             the src_pathname attribute won't exist.
         """
         log.debug(event)
-        self.check_last_moved_from(event)
+        self.check_last_moved(event)
 
         # event.src_pathname will only exist if file was moved from a
         # directory that is being watched
