@@ -5,6 +5,7 @@ import os, sys
 sys.path.insert(0, os.getcwd())
 
 import archivedb.core
+print(archivedb.core.__file__)
 
 def print_help():
     print("Usage: {0} <start|clean>".format(sys.argv[0]))
