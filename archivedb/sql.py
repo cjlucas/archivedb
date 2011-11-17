@@ -4,7 +4,7 @@ import re
 import pymysql
 import logging
 import archivedb.config as config
-from archivedb.common import enum_to_list, list_to_enum, escape_quotes
+from archivedb.common import enum_to_list, list_to_enum, escape_quotes, split_path
 
 class DatabaseConnection:
     def __init__(self, host, user, passwd, database, port, table_name):
@@ -145,8 +145,21 @@ class DatabaseConnection:
         return(rows_changed)
 
     def delete_file(self, id):
+        # TODO: rename this method 'delete_id', then move monitor.delete_file here
         self.check_connection()
         query = """DELETE FROM `archive` WHERE id = '{0}'""".format(id)
+
+        log.debug(query)
+        rows_changed = self.c.execute(query)
+        return(rows_changed)
+
+    def delete_directory(self, d):
+        self.check_connection()
+        d = d.rstrip(os.sep) + os.sep # append os.sep so split_path knows its a dir
+        watch_dir, path = split_path(d)[0:2]
+
+        query = """DELETE FROM `archive` WHERE `watch_dir` = '{0}' AND
+                `path` = '{1}'""".format(watch_dir, path)
 
         log.debug(query)
         rows_changed = self.c.execute(query)
