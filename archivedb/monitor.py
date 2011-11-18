@@ -176,7 +176,7 @@ class InotifyHandler(ProcessEvent):
         # if var is None, just skip
         if self.last_moved:
             log.debug("self.last_moved = {0}".format(self.last_moved))
-            if event.maskname == "IN_MOVED_TO":
+            if "IN_MOVED_TO" in event.maskname.split("|"):
                 # check if IN_MOVED_TO contains src_pathname attribute
                 # (damn them for not just setting src_pathname to None)
                 if not hasattr(event, "src_pathname"): del_last_moved = True
