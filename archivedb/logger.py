@@ -3,7 +3,7 @@ import sys
 import logging, logging.handlers
 import traceback
 import platform
-from archivedb import __author__
+from archivedb import __author__, __version__
 
 if sys.version_info[0] < 3:
     from StringIO import StringIO #@UnusedImport #@UnresolvedImport
@@ -71,6 +71,7 @@ def log_traceback(exc_info, header=None):
                               )
     s.write("\n")
     s.write("*** Copy this message in the email.\n")
+    s.write("*** archivedb: {0}\n".format(__version__))
     s.write("*** Python: {0}\n".format(platform.python_version()))
     s.write("*** Platform: {0}\n".format(platform.platform()))
     s.write("*** Contact Info: {0}\n".format(__author__))
