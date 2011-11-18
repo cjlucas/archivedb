@@ -181,7 +181,9 @@ class InotifyHandler(ProcessEvent):
                 # (damn them for not just setting src_pathname to None)
                 if not hasattr(event, "src_pathname"): del_last_moved = True
 
-                if event.src_pathname == self.last_moved: self.last_moved = None
+                # check if IN_MOVED_TO is the result of the last IN_MOVED_FROM
+                if event.src_pathname == self.last_moved.pathname: \
+                                            self.last_moved = None
                 else: del_last_moved = True
             else:
                 # if any event triggers and last_moved is not None, then
