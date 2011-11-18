@@ -2,6 +2,7 @@ import os
 import sys
 import logging, logging.handlers
 import traceback
+import platform
 from archivedb import __author__
 
 if sys.version_info[0] < 3:
@@ -70,6 +71,8 @@ def log_traceback(exc_info, header=None):
                               )
     s.write("\n")
     s.write("*** Copy this message in the email.\n")
+    s.write("*** Python: {0}\n".format(platform.python_version()))
+    s.write("*** Platform: {0}\n".format(platform.platform()))
     s.write("*** Contact Info: {0}\n".format(__author__))
     s.write("*** Please attach log file(s) (they can be found here: {0})\n".format(
                                                                     args["log_path"]))
