@@ -57,7 +57,10 @@ def _database_check():
         print("If any watch directories have been removed, ",
               "they will be removed permanently from the database.")
 
-        if input("Update? ").lower() in ('y', 'yes'):
+        # py3 doesn't use raw_input(), and input() for py2 expects an int
+        if config._py3: resp = input("Update? ").lower()
+        else: resp = raw_input("Update? ").lower()
+        if resp in ('y', 'yes'):
             db.alter_enum("watch_dir", args["watch_dirs"])
         else:
             print("OK, will not update watch directories in the database.")
