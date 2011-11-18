@@ -85,6 +85,7 @@ def clean():
     # check all files in the database for their existence, remove if not found
     ROW_COUNT = 500
     row_offset = 0
+    del_ids = []
     log.info("purging nonexistent files in the database (may take awhile)")
 
     while True:
@@ -96,9 +97,8 @@ def clean():
         for r in rows:
             full_path = os.path.join(*r[1:])
             if not os.path.exists(full_path):
-                log.debug("Deleting: {0}".format(full_path))
-                db.delete_file(r[0])
-                rows_cleaned += 1
+                del_ids.append(r[0])
+                log.debug("marked for deletion: {0}".format(full_path))
 
         # if the number of rows received from the query is equal to ROW_COUNT,
         # that means there's probably more rows left to check. But if it's
@@ -106,6 +106,10 @@ def clean():
         if len(rows) < ROW_COUNT: break
         # update the offset
         else: row_offset += len(rows)
+
+    for i in del_ids:
+        db.delete_file(i)
+        rows_cleaned += 1
 
 
     log.info("total rows cleaned: {0}".format(rows_cleaned))
