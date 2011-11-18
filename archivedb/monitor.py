@@ -182,6 +182,9 @@ class InotifyHandler(ProcessEvent):
                 if not hasattr(event, "src_pathname"): del_last_moved = True
 
                 # check if IN_MOVED_TO is the result of the last IN_MOVED_FROM
+                log.debug("event.src_pathname = {0}".format(event.src_pathname))
+                log.debug("self.last_moved.pathname = {0}".format(
+                                                    self.last_moved.pathname))
                 if event.src_pathname == self.last_moved.pathname: \
                                             self.last_moved = None
                 else: del_last_moved = True
@@ -270,12 +273,12 @@ class InotifyHandler(ProcessEvent):
                     # since update was unsuccesful, it's presumed that the original
                     # file was not in the database, so we'll just insert it instead
                     log.debug("no rows were changed during UPDATE, inserting {0} into database.".format(dest_full_path))
-                    add_file(self.db, dest_full_path)
+
+                    if event.dir: scan_dir(self.db, dest_full_path)
+                    else: add_file(self.db, dest_full_path)
             else:
-                if event.dir:
-                    scan_dir(self.db, dest_full_path)
-                else:
-                    add_file(self.db, dest_full_path)
+                if event.dir: scan_dir(self.db, dest_full_path)
+                else: add_file(self.db, dest_full_path)
         else:
             # since either the file or the path of the file was flagged as ignored,
             # it's not going to be updated in the database. therefor,
