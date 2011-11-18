@@ -1,11 +1,13 @@
-import os, sys, logging
+import os
+import sys
+import logging
 import archivedb.common
 
+_py3 = sys.version_info > (3,)
+
 # The ConfigParser module has been renamed to configparser in Python 3.0
-if sys.version_info[0] < 3:
-    import ConfigParser as configparser #@UnresolvedImport @UnusedImport
-else:
-    import configparser #@Reimport
+if _py3: import ConfigParser as configparser #@UnresolvedImport @UnusedImport
+else: import configparser #@Reimport
 
 
 def get_default_params(section):
