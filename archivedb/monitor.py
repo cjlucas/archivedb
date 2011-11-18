@@ -195,6 +195,7 @@ class InotifyHandler(ProcessEvent):
 
         if del_last_moved:
             log.debug("it is assumed file was moved outside watch_dirs, deleting.")
+            log.info("deleting '{0}'".format(self.last_moved.pathname))
             if self.last_moved.dir: self.db.delete_directory(
                                         self.last_moved.pathname)
             else: delete_file(self.db, self.last_moved)
@@ -270,7 +271,7 @@ class InotifyHandler(ProcessEvent):
 
                 log.debug("rows_changed = {0}".format(rows_changed))
                 if rows_changed == 0:
-                    # since update was unsuccesful, it's presumed that the original
+                    # since update was unsuccessful, it's presumed that the original
                     # file was not in the database, so we'll just insert it instead
                     log.debug("no rows were changed during UPDATE, inserting {0} into database.".format(dest_full_path))
 
@@ -283,8 +284,7 @@ class InotifyHandler(ProcessEvent):
             # since either the file or the path of the file was flagged as ignored,
             # it's not going to be updated in the database. therefor,
             # the src file should just be deleted from the database
-            if src_full_path:
-                delete_file(self.db, src_full_path)
+            if src_full_path: delete_file(self.db, src_full_path)
 
 def run_inotify():
     # IN_CREATE is only needed for auto_add to work
