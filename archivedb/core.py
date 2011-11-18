@@ -1,4 +1,6 @@
-import os, time, logging
+import os
+import time
+import logging
 
 import archivedb.logger
 import archivedb.config as config
@@ -59,7 +61,7 @@ def _database_check():
 
         # py3 doesn't use raw_input(), and input() for py2 expects an int
         if config._py3: resp = input("Update? ").lower()
-        else: resp = raw_input("Update? ").lower()
+        else: resp = raw_input("Update? ").lower() #@UndefinedVariable
         if resp in ('y', 'yes'):
             db.alter_enum("watch_dir", args["watch_dirs"])
         else:
