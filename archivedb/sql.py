@@ -18,7 +18,7 @@ class DatabaseConnection:
 
         self.create_connection()
 
-    def check_connection(self):
+    def _check_connection(self):
         reconnect = False
         try:
             if self.db.ping() == False:
@@ -32,15 +32,13 @@ class DatabaseConnection:
             self.create_connection()
 
     def table_exists(self, table_name):
-        self.check_connection()
+        self._check_connection()
         self.c.execute("SHOW TABLES")
         tables = self.c.fetchall()
         tables = [t[0] for t in tables]
 
-        if table_name in tables:
-            return(True)
-        else:
-            return(False)
+        if table_name in tables: return(True)
+        else: return(False)
 
     def create_database(self):
         db = pymysql.connect(self.host, self.user, self.passwd, port=self.port)
@@ -49,8 +47,8 @@ class DatabaseConnection:
         log.info("database '{0}' created".format(self.database))
 
     def create_table(self, query):
-        self.check_connection()
-        self.c.execute(query)
+        self._check_connection()
+        self._execute(query)
         log.info("table created")
 
     def create_connection(self):
@@ -77,7 +75,7 @@ class DatabaseConnection:
                 sys.exit(1)
 
     def insert_file(self, watch_dir, path, filename, md5, mtime, size):
-        self.check_connection()
+        self._check_connection()
         watch_dir, path, filename = (escape_quotes(watch_dir),
                                      escape_quotes(path),
                                      escape_quotes(filename),
@@ -95,11 +93,10 @@ class DatabaseConnection:
                     size,
                 )
 
-        log.debug(query)
-        self.c.execute(query)
+        return(self._execute(query))
 
     def update_file(self, watch_dir, path, filename, md5, mtime, size):
-        self.check_connection()
+        self._check_connection()
         watch_dir, path, filename = (escape_quotes(watch_dir),
                                      escape_quotes(path),
                                      escape_quotes(filename),
@@ -116,12 +113,11 @@ class DatabaseConnection:
                     path,
                     filename,
                 )
-        log.debug(query)
-        rows_changed = self.c.execute(query)
-        return(rows_changed)
+
+        return(self._execute(query))
 
     def move_file(self, src, dest):
-        self.check_connection()
+        self._check_connection()
         dest = [
             escape_quotes(dest[0]),
             escape_quotes(dest[1]),
@@ -140,21 +136,17 @@ class DatabaseConnection:
                     src[0], src[1], src[2],
                 )
 
-        log.debug(query)
-        rows_changed = self.c.execute(query)
-        return(rows_changed)
+        return(self._execute(query))
 
     def delete_file(self, id):
         # TODO: rename this method 'delete_id', then move monitor.delete_file here
-        self.check_connection()
+        self._check_connection()
         query = """DELETE FROM `archive` WHERE id = '{0}'""".format(id)
 
-        log.debug(query)
-        rows_changed = self.c.execute(query)
-        return(rows_changed)
+        return(self._execute(query))
 
     def delete_directory(self, d):
-        self.check_connection()
+        self._check_connection()
         d = d.rstrip(os.sep) + os.sep # append os.sep so split_path knows its a dir
         watch_dir, path = split_path(config.args["watch_dirs"], d)[0:2]
 
@@ -162,12 +154,10 @@ class DatabaseConnection:
         query = """DELETE FROM `archive` WHERE `watch_dir` = '{0}' AND
                 `path` REGEXP '{1}(\/|$)'""".format(watch_dir, path)
 
-        log.debug(query)
-        rows_changed = self.c.execute(query)
-        return(rows_changed)
+        return(self._execute(query))
 
     def move_directory(self, src, dest):
-        self.check_connection()
+        self._check_connection()
         src_watch_dir = src[0]
         dest_watch_dir = dest[0]
         src_path = src[1]
@@ -202,7 +192,7 @@ class DatabaseConnection:
 
 
     def get_fields(self, watch_dir, path, filename, fields):
-        self.check_connection()
+        self._check_connection()
         if isinstance(fields, str): fields = [fields]
         watch_dir, path, filename = (escape_quotes(watch_dir),
                                      escape_quotes(path),
@@ -218,16 +208,14 @@ class DatabaseConnection:
             path,
             filename,
         )
-        log.debug(query)
-        if self.c.execute(query) == 0:
-            return(None)
-        else:
-            return(self.c.fetchall())
+        results = self._query(query)
+        if len(results) == 0: return(None)
+        else: return(results)
 
 
     def get_enum(self, field_index=1):
-        self.check_connection()
-        self.c.execute("DESCRIBE `{0}`".format(self.table_name))
+        self._check_connection()
+        self._execute("DESCRIBE `{0}`".format(self.table_name))
         # field type always at index pos 1
         enum_line = self.c.fetchall()[field_index][1]
 
@@ -235,19 +223,23 @@ class DatabaseConnection:
         return(watch_list)
 
     def alter_enum(self, field_name, watch_dirs):
-        self.check_connection()
+        self._check_connection()
         query = "ALTER TABLE `{0}` MODIFY `{1}` {2}".format(
             self.table_name,
             field_name,
             list_to_enum(watch_dirs),
         )
-        log.debug("query = {0}".format(query))
-        self.c.execute(query)
+        self._execute(query)
 
     def _execute(self, sql):
-        return(self.c.execute(sql))
+        """Execute the given query and return the number of rows changed"""
+        log.debug("sql = {0}".format(sql))
+        rows_changed = self.c.execute(sql)
+        return(rows_changed)
 
     def _query(self, sql):
+        """Execute the given query and return all rows"""
+        log.debug("sql = {0}".format(sql))
         self.c.execute(sql)
         return(self.c.fetchall())
 
