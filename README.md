@@ -25,7 +25,7 @@ REQUIREMENTS
 
 INSTALL INSTRUCTIONS
 --------------------
-- Run "python setup.py install"
+- Run ```python setup.py install``` or ```easy_install archivedb```
 - Copy example.conf to ~/.archivedb.conf and edit
 - Copy bin/archivedb into /usr/bin
 
