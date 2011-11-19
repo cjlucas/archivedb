@@ -61,7 +61,7 @@ class DatabaseConnection:
                 port=self.port,
             )
             self.c = self.db.cursor()
-            log.debug("MySQL connection successful")
+            log.debug("mysql connection successful")
         except (pymysql.OperationalError, pymysql.InternalError) as e:
             error_code = e.args[0]
             if error_code == 1049: # mysql server is up, but database doesn't exist
@@ -70,9 +70,8 @@ class DatabaseConnection:
                 # call create_conn() again now that database is created
                 self.create_conn()
             else:
-                log.critical("error when trying to connect to db: {0}".format(e))
-                log.critical("closing thread")
-                sys.exit(1)
+                log.critical("error when trying to connect to database")
+                raise(e)
 
     def insert_file(self, watch_dir, path, filename, md5, mtime, size):
         self._check_connection()
