@@ -13,6 +13,11 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         self.path = parse_result.path
         self.query = parse_result.query
 
+        # test stuff
+        print(self.client_address)
+        print(self.sys_version)
+        print(self.command)
+
         # support gzip compression
         if "gzip" in self.headers.get("Accept-Encoding"):
             use_gzip = True
