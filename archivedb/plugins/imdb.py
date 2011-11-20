@@ -12,7 +12,7 @@ class TitleParser:
     extensions = ("avi", "mkv", "mov", "mp4", "ogm")
     languages = ("(TRUE)?FRENCH", "GERMAN", "SPANISH", "CHINESE")
     misc = ("iNTERNAL", "COMPLETE", "Extras", "Criterion",
-            "(UN)?RATED", "[2-4]in1", "[SCE]{2,3}", "MULTI")
+            "(UN)?RATED", "[2-4]in1", "[SCE]{2,3}", "MULTI", "CUSTOM")
 
     keywords = sources + vcodecs + acodecs + resolutions + \
                 languages + extensions + misc
