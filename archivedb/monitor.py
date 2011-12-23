@@ -6,7 +6,7 @@ import time
 
 import archivedb.config as config
 import archivedb.sql as sql
-from archivedb.common import md5sum, split_path, escape_quotes
+from archivedb.common import md5sum, split_path
 from archivedb.logger import log_traceback
 
 log = logging.getLogger(__name__)

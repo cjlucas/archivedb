@@ -74,9 +74,11 @@ def split_path(watch_dirs, p):
 def join_path(watch_dir, path, file_name):
     return(os.path.join(watch_dir, path, file_name))
 
-def escape_quotes(s):
-    s = s.replace("\'", "\\'").replace('\"', '\\"')
-    return(s)
+####### DEPRECATED #############################################################
+# def escape_quotes(s):
+#    s = s.replace("\'", "\\'").replace('\"', '\\"')
+#    return(s)
+################################################################################
 
 
 def list_to_enum(watch_dirs):

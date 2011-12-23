@@ -4,7 +4,9 @@ import re
 import pymysql
 import logging
 import archivedb.config as config
-from archivedb.common import enum_to_list, list_to_enum, escape_quotes, split_path
+from archivedb.common import enum_to_list, list_to_enum, split_path
+
+escape_string = pymysql.converters.escape_string
 
 class DatabaseConnection:
     def __init__(self, host, user, passwd, database, port, table_name):
@@ -78,9 +80,9 @@ class DatabaseConnection:
 
     def insert_file(self, watch_dir, path, filename, md5, mtime, size):
         self.check_connection()
-        watch_dir, path, filename = (escape_quotes(watch_dir),
-                                     escape_quotes(path),
-                                     escape_quotes(filename),
+        watch_dir, path, filename = (escape_string(watch_dir),
+                                     escape_string(path),
+                                     escape_string(filename),
                                     )
 
         query = """INSERT INTO `{0}`
@@ -100,9 +102,9 @@ class DatabaseConnection:
 
     def update_file(self, watch_dir, path, filename, md5, mtime, size):
         self.check_connection()
-        watch_dir, path, filename = (escape_quotes(watch_dir),
-                                     escape_quotes(path),
-                                     escape_quotes(filename),
+        watch_dir, path, filename = (escape_string(watch_dir),
+                                     escape_string(path),
+                                     escape_string(filename),
                                     )
 
         query = """UPDATE `{0}` SET `md5`='{1}', `mtime`='{2}', `size`='{3}'
@@ -123,14 +125,14 @@ class DatabaseConnection:
     def move_file(self, src, dest):
         self.check_connection()
         dest = [
-            escape_quotes(dest[0]),
-            escape_quotes(dest[1]),
-            escape_quotes(dest[2]),
+            escape_string(dest[0]),
+            escape_string(dest[1]),
+            escape_string(dest[2]),
         ]
         src = [
-            escape_quotes(src[0]),
-            escape_quotes(src[1]),
-            escape_quotes(src[2]),
+            escape_string(src[0]),
+            escape_string(src[1]),
+            escape_string(src[2]),
         ]
 
         query = """UPDATE `archive` SET watch_dir = '{0}', path = '{1}',
@@ -204,9 +206,9 @@ class DatabaseConnection:
     def get_fields(self, watch_dir, path, filename, fields):
         self.check_connection()
         if isinstance(fields, str): fields = [fields]
-        watch_dir, path, filename = (escape_quotes(watch_dir),
-                                     escape_quotes(path),
-                                     escape_quotes(filename),
+        watch_dir, path, filename = (escape_string(watch_dir),
+                                     escape_string(path),
+                                     escape_string(filename),
                                     )
 
         selections = "{0}".format("`,`".join(fields))
