@@ -6,7 +6,9 @@ import logging
 import archivedb.config as config
 from archivedb.common import enum_to_list, list_to_enum, split_path
 
-escape_string = pymysql.converters.escape_string
+def escape_string(s):
+    """hack until I properly implement query formatting"""
+    return(pymysql.converters.escape_string(s).strip("'"))
 
 class DatabaseConnection:
     def __init__(self, host, user, passwd, database, port, table_name):
@@ -209,7 +211,7 @@ class DatabaseConnection:
         watch_dir, path, filename = (escape_string(watch_dir),
                                      escape_string(path),
                                      escape_string(filename),
-                                    )
+                                     )
 
         selections = "{0}".format("`,`".join(fields))
         query = """SELECT `{0}` FROM `{1}` WHERE
