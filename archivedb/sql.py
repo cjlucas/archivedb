@@ -190,8 +190,8 @@ class DatabaseConnection:
 
             query = """UPDATE `archive` SET `watch_dir` = '{0}', path = '{1}'
                     WHERE `id` = '{2}'""".format(
-                        dest_watch_dir,
-                        new_path,
+                        escape_string(dest_watch_dir),
+                        escape_string(new_path),
                         id,
                     )
 
