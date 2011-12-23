@@ -1,3 +1,14 @@
+v0.2.2 (November 19, 2011)
+--------------------------
+- Fixed an issue where directories being moved out of watch dirs wouldn't
+  be deleted properly (Issue #5)
+  
+- Fixed an issue with changing enum with Python 2 (Issue #6)
+
+- Added os info, python version, archivedb version to traceback log (Issue #7)
+
+- Clean function actually works properly now (Issue #8)
+
 v0.2.1 (November 5, 2011)
 -------------------------
 - Added:
