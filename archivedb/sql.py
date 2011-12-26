@@ -138,7 +138,7 @@ class DatabaseConnection:
         #        )
         ########################################################################
 
-        query = """UPDATE `{0}` SET `md5` = %s, `mtime` = %s, `size` = %s,
+        query = """UPDATE `{0}` SET `md5` = %s, `mtime` = %s, `size` = %s
                 WHERE `watch_dir` = %s and `path` = %s 
                 and `filename` = %s""".format(self.table_name)
 
