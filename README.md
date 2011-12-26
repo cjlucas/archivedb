@@ -23,7 +23,7 @@ REQUIREMENTS
 - [python-progressbar](http://code.google.com/p/python-progressbar/) (optional)
 
 
-INSTALL INSTRUCTIONS
+INSTALLATION
 --------------------
 - Run ```python setup.py install``` or ```easy_install archivedb```
 - Copy example.conf to ~/.archivedb.conf and edit
