@@ -287,7 +287,7 @@ class DatabaseConnection:
 
         args = (watch_dir, path, filename)
 
-        if self._execute(query) == 0: return(None)
+        if self._execute(query, args) == 0: return(None)
         else: return(self.c.fetchall())
 
 
@@ -307,8 +307,7 @@ class DatabaseConnection:
             field_name,
             list_to_enum(watch_dirs),
         )
-        log.debug("query = {0}".format(query))
-        self.c.execute(query)
+        self._execute(query)
 
     def _execute(self, query, args=None, c=None):
         """Returns number of rows affected"""
