@@ -202,7 +202,7 @@ class DatabaseConnection:
 
         # the REGEXP will delete all sub directories as well
         query = """DELETE FROM `{0}` WHERE `watch_dir` = %s and
-                `path` REGEXP %s""", format(self.table_name)
+                `path` REGEXP %s""".format(self.table_name)
 
         args = (watch_dir,
                 re.escape(path) + "(\/|$)")
@@ -250,7 +250,7 @@ class DatabaseConnection:
             ####################################################################
 
             query = """UPDATE `{0}` SET `watch_dir` = %s, `path` = %s 
-                    WHERE `id` = %s"""
+                    WHERE `id` = %s""".format(self.table_name)
 
             args = (dest_watch_dir,
                     new_path,
