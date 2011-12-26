@@ -53,7 +53,8 @@ class DatabaseConnection:
         log.info("database '{0}' created".format(self.database))
 
     def create_table(self, query):
-        # TODO: this isn't really a table creation function since it accepts any query
+        # CREATE TABLE query is specified in archivedb.config (may be utilized
+        # by plugins later)
         self._check_connection()
         self._execute(query)
         log.info("table created")
