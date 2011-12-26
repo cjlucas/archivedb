@@ -19,7 +19,7 @@ REQUIREMENTS
 
 - [MySQL](http://www.mysql.com/) 4.1+
 
-- [PyMySQL](http://www.pymysql.org/)
+- [PyMySQL](http://www.pymysql.org/) 0.5+
 - [python-progressbar](http://code.google.com/p/python-progressbar/) (optional)
 
 

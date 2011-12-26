@@ -4,11 +4,14 @@ import platform
 
 version = __import__('archivedb').__version__
 
-if sys.version_info > (3, 0): required_pkgs = ["PyMySQL3", ]
-elif sys.version_info > (2, 6): required_pkgs = ["PyMySQL", "simplejson"]
+if sys.version_info > (3, 0):
+	required_pkgs = ["PyMySQL3>=0.5", ]
+elif sys.version_info > (2, 6):
+	required_pkgs = ["PyMySQL>=0.5", "simplejson"]
 
 # pyinotify support (linux only)
-if platform.system() == 'Linux': required_pkgs.append("pyinotify")
+if platform.system() == 'Linux':
+	required_pkgs.append("pyinotify")
 
 # defaults
 required_pkgs.append("progressbar")
