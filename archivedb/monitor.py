@@ -90,20 +90,6 @@ def add_file(db, full_path):
             else:
                 log.warn("file '{0}' was moved/deleted during md5sum creation. not being added to database".format(full_path))
 
-
-def delete_file(db, full_path):
-    (watch_dir, path, filename) = split_path(args["watch_dirs"], full_path)
-
-    # get id
-    data = db.get_fields(watch_dir, path, filename, ["id"])
-
-    if data:
-        id = data[0][0]
-        log.info("removing {0} from the database.".format(filename))
-        db.delete_file(id)
-    else:
-        log.debug("file '{0}' not found in database.".format(full_path))
-
 def scan_dir(db, d):
     if not os.path.isdir(d):
         log.warning("'{0}' does not exist, skipping.".format(d))
@@ -198,7 +184,7 @@ class InotifyHandler(ProcessEvent):
             log.info("deleting '{0}'".format(self.last_moved.pathname))
             if self.last_moved.dir: self.db.delete_directory(
                                         self.last_moved.pathname)
-            else: delete_file(self.db, self.last_moved)
+            else: self.db.delete_file(self.last_moved)
             self.last_moved = None
 
     def process_IN_CLOSE_WRITE(self, event):
@@ -216,7 +202,7 @@ class InotifyHandler(ProcessEvent):
         self.check_last_moved(event)
 
         if event.dir: self.db.delete_directory(event.pathname)
-        else: delete_file(self.db, event.pathname)
+        else: self.db.delete_file(event.pathname)
 
     def process_IN_MOVED_FROM(self, event):
         """
@@ -284,7 +270,7 @@ class InotifyHandler(ProcessEvent):
             # since either the file or the path of the file was flagged as ignored,
             # it's not going to be updated in the database. therefor,
             # the src file should just be deleted from the database
-            if src_full_path: delete_file(self.db, src_full_path)
+            if src_full_path: self.db.delete_file(src_full_path)
 
 def run_inotify():
     # IN_CREATE is only needed for auto_add to work

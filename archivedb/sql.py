@@ -183,8 +183,20 @@ class DatabaseConnection:
 
         return(self._execute(query, args))
 
-    def delete_file(self, id):
-        # TODO: rename this method 'delete_id', then move monitor.delete_file here
+    def delete_file(self, full_path):
+        (watch_dir, path, filename) = split_path(config.args["watch_dirs"], full_path)
+
+        # get id
+        data = self.get_fields(watch_dir, path, filename, ["id"])
+
+        if data:
+            id = data[0][0]
+            log.info("removing {0} from the database.".format(filename))
+            self.delete_id(id)
+        else:
+            log.debug("file '{0}' not found in database.".format(full_path))
+
+    def delete_id(self, id):
         self._check_connection()
         query = """DELETE FROM `archive` WHERE id = %s"""
         args = id

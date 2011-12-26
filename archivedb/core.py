@@ -108,7 +108,7 @@ def clean():
         else: row_offset += len(rows)
 
     for i in del_ids:
-        db.delete_file(i)
+        db.delete_id(i)
         rows_cleaned += 1
 
 
