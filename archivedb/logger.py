@@ -3,6 +3,7 @@ import sys
 import logging, logging.handlers
 import traceback
 import platform
+import pymysql
 from archivedb import __author__, __version__
 
 if sys.version_info[0] < 3:
@@ -73,6 +74,7 @@ def log_traceback(exc_info, header=None):
     s.write("*** Copy this message in the email.\n")
     s.write("*** archivedb: {0}\n".format(__version__))
     s.write("*** Python: {0}\n".format(platform.python_version()))
+    s.write("*** PyMySQL: {0}\n".format(pymysql.__version__))
     s.write("*** Platform: {0}\n".format(platform.platform()))
     s.write("*** Contact Info: {0}\n".format(__author__))
     s.write("*** Please attach log file(s) (they can be found here: {0})\n".format(
