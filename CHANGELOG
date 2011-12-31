@@ -1,3 +1,9 @@
+v0.2.3 (December 31, 2011)
+--------------------------
+- improvement: better formatting for sql queries (Issue #1)
+
+- note: PyMySQL 0.5 now required
+
 v0.2.2 (November 19, 2011)
 --------------------------
 - Fixed an issue where directories being moved out of watch dirs wouldn't
