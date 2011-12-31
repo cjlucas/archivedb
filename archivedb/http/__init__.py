@@ -73,30 +73,49 @@ class APIHandler(BaseHTTPRequestHandler):
         f.seek(0)
         self.output = f.read()
 
-    def _perform_sanity_checks(self):
-        if self.path_split[0].lower() != "api":
+    def _check_url(self):
+        if len(self.path_split) == 3:
+            doc_root, api_name, method_name = self.path_split[:3]
+            api_dict = archivedb.http.api._find_apis()
+            print(doc_root)
+            print(api_name)
+            print(method_name)
+            print(api_dict)
+        else:
             self.output = "invalid url"
-        elif self.path_split[1].lower() not in archivedb.http.api._find_apis():
+            return
+
+        api_dict = archivedb.http.api._api_dict
+
+        if doc_root != "api":
+            self.output = "invalid url"
+        elif api_name not in api_dict:
             self.output = "'{0}' is not a valid api".format(self.path_split[1])
+        elif method_name not in getattr(api_dict.get(api_name), "public_methods"):
+            self.output = "'{0}' is not a valid method.".format(method_name)
 
     def do_GET(self):
         """ Handle GET request """
         self.parse_result = urlsplit(self.path)
-        self.path = self.parse_result.path
+        self.path = self.parse_result.path.lower()
         self.path_split = self.path.strip("/").split("/")
         self.query = self.parse_result.query
         self.out_headers = {}
         self.output = None
 
         self._process_headers()
-        self._perform_sanity_checks()
-
+        self._check_url()
 
         # test stuff
         print(self.path)
         print(self.client_address)
         print(self.sys_version)
         print(self.command)
+
+        # if _check_url() found an error, write it and return
+        if self.output is not None:
+            self.wfile.write(self.output)
+            return
 
         if self.output is not None: self._process_output(self.output)
 
