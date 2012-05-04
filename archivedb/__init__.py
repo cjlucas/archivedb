@@ -21,4 +21,4 @@
 # THE SOFTWARE.
 
 __author__ = "Chris Lucas <chris@chrisjlucas.com>"
-__version__ = "0.2.3"
+__version__ = "0.2.4b"
