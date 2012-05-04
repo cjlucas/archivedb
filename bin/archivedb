@@ -11,11 +11,12 @@ def print_help():
     print("Usage: {0} <start|clean>".format(sys.argv[0]))
 
 if __name__ == '__main__':
-    valid_cmds = ("start", "clean")
+    valid_cmds = ("start", "clean", "scan")
 
     cmd = sys.argv[-1].lower()
     if cmd in valid_cmds:
         if cmd == "start": archivedb.core.main()
-        elif cmd == "clean": archivedb.core.clean()
+        elif cmd == "clean": archivedb.core.clean(delete=True)
+        elif cmd == "scan": archivedb.core.clean(delete=False)
     else:
         print_help()

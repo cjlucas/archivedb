@@ -69,24 +69,25 @@ def _database_check():
 
     return(db)
 
-def clean():
+def clean(delete=False):
     log.debug("start: clean()")
     rows_cleaned = 0
     db = _database_check()
 
     # remove all rows where watch_dir = '' 
     # (this would occur when a watch_dir has been removed from the enum list)
-    sql = "DELETE FROM `archive` WHERE watch_dir = ''"
-    log.debug("executing: \"{0}\"".format(sql))
-    rows = db._execute(sql)
-    log.debug("{0} rows removed from last query.".format(rows))
-    rows_cleaned += rows
+    if delete:
+        sql = "DELETE FROM `archive` WHERE watch_dir = ''"
+        log.debug("executing: \"{0}\"".format(sql))
+        rows = db._execute(sql)
+        log.debug("{0} rows removed from last query.".format(rows))
+        rows_cleaned += rows
 
     # check all files in the database for their existence, remove if not found
     ROW_COUNT = 500
     row_offset = 0
     del_ids = []
-    log.info("purging nonexistent files in the database (may take awhile)")
+    log.info("checking for nonexistent files in the database (may take awhile)")
 
     while True:
         sql = """SELECT id, watch_dir, path, filename 
@@ -97,8 +98,11 @@ def clean():
         for r in rows:
             full_path = os.path.join(*r[1:])
             if not os.path.exists(full_path):
-                del_ids.append(r[0])
-                log.debug("marked for deletion: {0}".format(full_path))
+                if delete:
+                    del_ids.append(r[0])
+                    log.debug("marked for deletion: {0}".format(full_path))
+                else:
+                    log.info("file not found: {0}".format(full_path))
 
         # if the number of rows received from the query is equal to ROW_COUNT,
         # that means there's probably more rows left to check. But if it's
@@ -107,12 +111,12 @@ def clean():
         # update the offset
         else: row_offset += len(rows)
 
-    for i in del_ids:
-        db.delete_id(i)
-        rows_cleaned += 1
+    if delete:
+        for i in del_ids:
+            db.delete_id(i)
+            rows_cleaned += 1
 
-
-    log.info("total rows cleaned: {0}".format(rows_cleaned))
+        log.info("total rows cleaned: {0}".format(rows_cleaned))
     log.debug("end: clean()")
 
 def main():
